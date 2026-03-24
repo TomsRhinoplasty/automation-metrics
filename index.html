@@ -6,7 +6,6 @@
 <title>PACE Automation Performance</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-date-fns/3.0.0/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',sans-serif;background:#0c0c0e;color:#e8e6e1;line-height:1.6}
@@ -187,21 +186,106 @@ let ct='<table><thead><tr><th>Threshold</th><th>Auto</th><th>Human</th></tr></th
 ct+='</tbody></table>';
 document.getElementById('compTable').innerHTML=ct;
 
-// Cumulative chart
-new Chart(document.getElementById('cumChart'),{
-  type:'scatter',
-  data:{datasets:[
-    {label:'Auto',data:auto.map((j,i)=>({x:new Date(j.estSetup),y:i+1})),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false},
-    {label:'Human',data:human.map((j,i)=>({x:new Date(j.estSetup),y:i+1})),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false}
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#27272a',titleColor:'#e8e6e1',bodyColor:'#a1a1aa',displayColors:false,callbacks:{
-    title:ctx=>{const ds=ctx[0].datasetIndex;const src=ds===0?auto:human;return(ds===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job},
-    label:ctx=>{const src=ctx.datasetIndex===0?auto:human;const d=src[ctx.dataIndex];return['E2E: '+fmt(d.e2e),'#'+(ctx.dataIndex+1)+' cumulative']}
-  }}},scales:{
-    x:{type:'time',time:{unit:'week',displayFormats:{week:'MMM d'}},grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}}},
-    y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},beginAtZero:true,title:{display:true,text:'Cumulative jobs',color:'#52525b',font:{size:11}}}
-  }}
-});
+// ---------- FIXED CUMULATIVE CHART ----------
+// No time adapter required. Use numeric timestamps.
+const autoCumData = auto
+  .slice()
+  .sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
+  .map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
+
+const humanCumData = human
+  .slice()
+  .sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
+  .map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
+
+try {
+  new Chart(document.getElementById('cumChart'),{
+    type:'scatter',
+    data:{datasets:[
+      {
+        label:'Auto',
+        data:autoCumData,
+        borderColor:'#4ade80',
+        backgroundColor:'rgba(74,222,128,0.7)',
+        pointRadius:2,
+        showLine:true,
+        borderWidth:1.5,
+        stepped:'after',
+        fill:false
+      },
+      {
+        label:'Human',
+        data:humanCumData,
+        borderColor:'#a78bfa',
+        backgroundColor:'rgba(167,139,250,0.7)',
+        pointRadius:2,
+        showLine:true,
+        borderWidth:1.5,
+        stepped:'after',
+        fill:false
+      }
+    ]},
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      parsing:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#27272a',
+          titleColor:'#e8e6e1',
+          bodyColor:'#a1a1aa',
+          displayColors:false,
+          callbacks:{
+            title:ctx=>{
+              const ds=ctx[0].datasetIndex;
+              const src=ds===0
+                ? auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
+                : human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+              return (ds===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
+            },
+            label:ctx=>{
+              const src=ctx.datasetIndex===0
+                ? auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
+                : human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+              const d=src[ctx.dataIndex];
+              return ['E2E: '+fmt(d.e2e),'#'+(ctx.dataIndex+1)+' cumulative'];
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          type:'linear',
+          grid:{color:'rgba(255,255,255,0.06)'},
+          ticks:{
+            color:'rgba(255,255,255,0.4)',
+            font:{size:11},
+            callback:(value)=>{
+              return new Date(value).toLocaleDateString('en-US',{
+                month:'short',
+                day:'numeric'
+              });
+            }
+          }
+        },
+        y:{
+          grid:{color:'rgba(255,255,255,0.06)'},
+          ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},
+          beginAtZero:true,
+          title:{
+            display:true,
+            text:'Cumulative jobs',
+            color:'#52525b',
+            font:{size:11}
+          }
+        }
+      }
+    }
+  });
+} catch (e) {
+  console.error('cumChart failed:', e);
+}
 
 // Weekly chart
 const aW={},hW={};
@@ -210,17 +294,21 @@ human.forEach(j=>{const w=weekKey(j.estSetup);hW[w]=(hW[w]||0)+1});
 const weeks=[...new Set([...Object.keys(aW),...Object.keys(hW)])].sort();
 const wLabels=weeks.map(w=>new Date(w+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}));
 
-new Chart(document.getElementById('weeklyChart'),{
-  type:'bar',
-  data:{labels:wLabels,datasets:[
-    {label:'Auto',data:weeks.map(w=>aW[w]||0),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
-    {label:'Human',data:weeks.map(w=>hW[w]||0),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
-    x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.4)',font:{size:10},maxRotation:45}},
-    y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},beginAtZero:true}
-  }}
-});
+try {
+  new Chart(document.getElementById('weeklyChart'),{
+    type:'bar',
+    data:{labels:wLabels,datasets:[
+      {label:'Auto',data:weeks.map(w=>aW[w]||0),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
+      {label:'Human',data:weeks.map(w=>hW[w]||0),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.4)',font:{size:10},maxRotation:45}},
+      y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},beginAtZero:true}
+    }}
+  });
+} catch (e) {
+  console.error('weeklyChart failed:', e);
+}
 
 // Footer
 document.getElementById('footNote').textContent='Data source: PACE job + estimate history. Estimate Entry DateTime to last job entry action by entering user. Generated '+PACE_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs (EZEP/payapi), '+human.length+' human jobs (YATC).';
