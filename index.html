@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',sans-serif;background:#0c0c0e;color:#e8e6e1;line-height:1.6}
-.wrap{max-width:1100px;margin:0 auto;padding:2rem}
+.wrap{max-width:1180px;margin:0 auto;padding:2rem}
 header{margin-bottom:2rem}
 h1{font-size:26px;font-weight:700;margin-bottom:4px}
 .sub{font-size:13px;color:#71717a}
@@ -17,24 +17,25 @@ h1{font-size:26px;font-weight:700;margin-bottom:4px}
 .section{margin-bottom:2.5rem}
 .section h2{font-size:12px;font-weight:600;color:#71717a;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
 .mg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
-@media(max-width:800px){.mg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1000px){.mg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.mg{grid-template-columns:1fr}}
 .m{background:#18181b;border:1px solid #27272a;border-radius:10px;padding:1.25rem}
 .m .ml{font-size:10px;color:#52525b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .m .mv{font-family:'DM Mono',monospace;font-size:28px;font-weight:500}
 .m .ms{font-size:11px;color:#52525b;margin-top:4px}
 .m.hero{padding:1.5rem}
-.m.hero .mv{font-size:42px}
+.m.hero .mv{font-size:38px}
 .green{color:#4ade80}.purple{color:#a78bfa}.amber{color:#fbbf24}
 .card{background:#18181b;border:1px solid #27272a;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
 .card h3{font-size:14px;font-weight:500;color:#a1a1aa;margin-bottom:12px}
-.legend{display:flex;gap:20px;margin-bottom:10px;font-size:12px;color:#71717a}
+.legend{display:flex;gap:20px;margin-bottom:10px;font-size:12px;color:#71717a;flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend .dot{width:8px;height:8px;border-radius:50%}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;color:#52525b;font-weight:500;padding:6px 8px;border-bottom:1px solid #27272a}
 td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM Mono',monospace;font-size:11px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
 .pipeline-flow{display:flex;align-items:center;gap:0;margin-bottom:1rem}
 .pf-box{padding:10px 14px;border-radius:6px;font-size:11px;flex:1}
 .pf-box strong{display:block;font-size:12px;margin-bottom:2px}
@@ -48,21 +49,23 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
 
 <header>
   <h1>PACE Automation Performance</h1>
-  <p class="sub">End-to-end analysis: estimate creation through job entry complete</p>
+  <p class="sub">End-to-end analysis: estimate creation through job entry complete, with invoice value tracked per job</p>
   <p class="updated" id="updated"></p>
 </header>
 
-<!-- HERO -->
 <div class="section">
   <div class="mg">
     <div class="m hero"><div class="ml">Automation E2E (median)</div><div class="mv green" id="hAutoMed"></div><div class="ms">estimate to job complete</div></div>
     <div class="m hero"><div class="ml">Human E2E (median)</div><div class="mv purple" id="hHumanMed"></div><div class="ms">estimate to job complete</div></div>
     <div class="m hero"><div class="ml">Speed ratio (median)</div><div class="mv amber" id="hRatio"></div><div class="ms" id="hRatioSub"></div></div>
-    <div class="m hero"><div class="ml">Automation jobs</div><div class="mv green" id="hAutoN"></div><div class="ms" id="hHumanN"></div></div>
+    <div class="m hero"><div class="ml">All jobs</div><div class="mv" id="hAllJobs"></div><div class="ms" id="hJobsSub"></div></div>
+    <div class="m hero"><div class="ml">Automation invoice total</div><div class="mv green" id="hAutoInv"></div><div class="ms" id="hAutoInvSub"></div></div>
+    <div class="m hero"><div class="ml">Human invoice total</div><div class="mv purple" id="hHumanInv"></div><div class="ms" id="hHumanInvSub"></div></div>
+    <div class="m hero"><div class="ml">Combined invoice total</div><div class="mv amber" id="hTotalInv"></div><div class="ms">sum of all jobs in data.js</div></div>
+    <div class="m hero"><div class="ml">Median invoice / job</div><div class="mv" id="hMedInvoice"></div><div class="ms" id="hMedInvoiceSub"></div></div>
   </div>
 </div>
 
-<!-- CUMULATIVE CHART -->
 <div class="section">
   <div class="card">
     <h3>Cumulative jobs — every entry at its exact timestamp</h3>
@@ -74,7 +77,6 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   </div>
 </div>
 
-<!-- PIPELINE FLOWS -->
 <div class="section">
   <h2>Full pipeline: estimate to job</h2>
   <p style="font-size:13px;color:#52525b;margin-bottom:16px" id="pipelineSubtitle"></p>
@@ -102,7 +104,6 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   </div>
 </div>
 
-<!-- SPEED DISTRIBUTION -->
 <div class="section">
   <h2>Speed: estimate creation to job entry complete</h2>
   <div class="mg" id="speedMetrics"></div>
@@ -118,7 +119,29 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   </div>
 </div>
 
-<!-- WEEKLY VOLUME -->
+<div class="section">
+  <h2>Invoice value by job</h2>
+  <div class="mg" id="invoiceMetrics"></div>
+  <div class="two-col">
+    <div class="card">
+      <h3>Individual invoice amounts over time</h3>
+      <div class="legend">
+        <span><span class="dot" style="background:#4ade80"></span>Automation jobs</span>
+        <span><span class="dot" style="background:#a78bfa"></span>Human jobs</span>
+      </div>
+      <div style="position:relative;height:320px"><canvas id="invoiceScatterChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Invoice totals by week</h3>
+      <div class="legend">
+        <span><span class="dot" style="background:#4ade80"></span>Automation</span>
+        <span><span class="dot" style="background:#a78bfa"></span>Human</span>
+      </div>
+      <div style="position:relative;height:320px"><canvas id="invoiceWeeklyChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
 <div class="section">
   <h2>Weekly volume</h2>
   <div class="card">
@@ -135,27 +158,48 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
 
 <script src="data.js"></script>
 <script>
-function pct(arr,p){const s=[...arr].sort((a,b)=>a-b);const i=(p/100)*(s.length-1);return s[Math.floor(i)]+(s[Math.ceil(i)]-s[Math.floor(i)])*(i-Math.floor(i))}
+function pct(arr,p){
+  if(!arr.length) return 0;
+  const s=[...arr].sort((a,b)=>a-b);
+  const i=(p/100)*(s.length-1);
+  return s[Math.floor(i)]+(s[Math.ceil(i)]-s[Math.floor(i)])*(i-Math.floor(i));
+}
 function fmt(s){if(s==null||isNaN(s))return'-';s=Math.abs(s);if(s<60)return Math.round(s)+'s';if(s<3600)return(s/60).toFixed(1)+' min';return(s/3600).toFixed(1)+' hrs'}
+function money(v){return '$'+Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function weekKey(iso){const d=new Date(iso),day=d.getDay(),m=new Date(d);m.setDate(d.getDate()-((day+6)%7));return m.toISOString().slice(0,10)}
+function sum(arr, key){return arr.reduce((a,b)=>a + (Number(key ? b[key] : b) || 0),0)}
 
-const auto=PACE_DATA.auto, human=PACE_DATA.human;
-const aE2E=auto.map(j=>j.e2e), hE2E=human.map(j=>j.e2e);
+const auto=PACE_DATA.auto || [];
+const human=PACE_DATA.human || [];
+const aE2E=auto.map(j=>j.e2e).filter(v=>Number.isFinite(v));
+const hE2E=human.map(j=>j.e2e).filter(v=>Number.isFinite(v));
+const aInv=auto.map(j=>Number(j.amountToInvoice)||0);
+const hInv=human.map(j=>Number(j.amountToInvoice)||0);
 const aMed=pct(aE2E,50), hMed=pct(hE2E,50);
-const aMean=aE2E.reduce((a,b)=>a+b,0)/aE2E.length;
-const hMean=hE2E.reduce((a,b)=>a+b,0)/hE2E.length;
-const ratio=Math.round(hMed/aMed);
+const aMean=aE2E.length ? sum(aE2E)/aE2E.length : 0;
+const hMean=hE2E.length ? sum(hE2E)/hE2E.length : 0;
+const ratio=(aMed>0 && hMed>0) ? Math.round(hMed/aMed) : 0;
+const autoInvoiceTotal = PACE_DATA.summary?.autoInvoiceTotal ?? sum(auto,'amountToInvoice');
+const humanInvoiceTotal = PACE_DATA.summary?.humanInvoiceTotal ?? sum(human,'amountToInvoice');
+const grandInvoiceTotal = PACE_DATA.summary?.grandInvoiceTotal ?? (autoInvoiceTotal + humanInvoiceTotal);
 
 // Header
-document.getElementById('updated').textContent='Data as of '+PACE_DATA.generated.slice(0,10)+' | '+auto.length+' auto + '+human.length+' human jobs';
+document.getElementById('updated').textContent='Data as of '+PACE_DATA.generated.slice(0,10)+' | '+auto.length+' auto + '+human.length+' human jobs | total invoiced '+money(grandInvoiceTotal);
 
 // Hero
 document.getElementById('hAutoMed').textContent=fmt(aMed);
 document.getElementById('hHumanMed').textContent=fmt(hMed);
-document.getElementById('hRatio').textContent=ratio.toLocaleString()+'×';
+document.getElementById('hRatio').textContent=ratio ? ratio.toLocaleString()+'×' : '-';
 document.getElementById('hRatioSub').textContent=fmt(aMed)+' vs '+fmt(hMed);
-document.getElementById('hAutoN').textContent=auto.length;
-document.getElementById('hHumanN').textContent='vs '+human.length+' human';
+document.getElementById('hAllJobs').textContent=(auto.length + human.length).toLocaleString();
+document.getElementById('hJobsSub').textContent=auto.length+' automation vs '+human.length+' human';
+document.getElementById('hAutoInv').textContent=money(autoInvoiceTotal);
+document.getElementById('hHumanInv').textContent=money(humanInvoiceTotal);
+document.getElementById('hTotalInv').textContent=money(grandInvoiceTotal);
+document.getElementById('hMedInvoice').textContent=money(pct([...aInv,...hInv],50));
+document.getElementById('hMedInvoiceSub').textContent=money(pct(aInv,50))+' auto vs '+money(pct(hInv,50))+' human';
+document.getElementById('hAutoInvSub').textContent=money(auto.length ? autoInvoiceTotal/auto.length : 0)+' avg/job';
+document.getElementById('hHumanInvSub').textContent=money(human.length ? humanInvoiceTotal/human.length : 0)+' avg/job';
 
 // Pipeline
 const estToJob=pct(auto.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000),50);
@@ -164,7 +208,7 @@ document.getElementById('pfAutoDone').textContent='+'+fmt(aMed);
 const hEstToJob=pct(human.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000),50);
 document.getElementById('pfHumanWait').textContent='+'+fmt(hEstToJob);
 document.getElementById('pfHumanDone').textContent='+'+fmt(hMed);
-document.getElementById('pipelineSubtitle').textContent='The automation collapses work previously split across two roles (estimator + data entry) into a single continuous process.';
+document.getElementById('pipelineSubtitle').textContent='The automation collapses work previously split across two roles (estimator + data entry) into a single continuous process, while invoice totals remain attached to each completed job.';
 
 // Speed metrics
 document.getElementById('speedMetrics').innerHTML=[
@@ -174,126 +218,110 @@ document.getElementById('speedMetrics').innerHTML=[
 
 // Distribution
 let dt='<table><thead><tr><th>Measure</th><th>Automation</th><th>Human</th><th>Ratio</th></tr></thead><tbody>';
-[10,25,50,75,90].forEach(p=>{const a=pct(aE2E,p),h=pct(hE2E,p);dt+=`<tr><td>${p===50?'<strong>Median</strong>':'P'+p}</td><td>${p===50?'<strong>'+fmt(a)+'</strong>':fmt(a)}</td><td>${p===50?'<strong>'+fmt(h)+'</strong>':fmt(h)}</td><td style="color:#fbbf24;font-weight:500">${Math.round(h/a).toLocaleString()}×</td></tr>`});
-dt+=`<tr><td><strong>Mean</strong></td><td><strong>${fmt(aMean)}</strong></td><td><strong>${fmt(hMean)}</strong></td><td style="color:#fbbf24;font-weight:500">${Math.round(hMean/aMean).toLocaleString()}×</td></tr></tbody></table>`;
+[10,25,50,75,90].forEach(p=>{const a=pct(aE2E,p),h=pct(hE2E,p);dt+=`<tr><td>${p===50?'<strong>Median</strong>':'P'+p}</td><td>${p===50?'<strong>'+fmt(a)+'</strong>':fmt(a)}</td><td>${p===50?'<strong>'+fmt(h)+'</strong>':fmt(h)}</td><td style="color:#fbbf24;font-weight:500">${a>0&&h>0?Math.round(h/a).toLocaleString()+'×':'-'}</td></tr>`});
+dt+=`<tr><td><strong>Mean</strong></td><td><strong>${fmt(aMean)}</strong></td><td><strong>${fmt(hMean)}</strong></td><td style="color:#fbbf24;font-weight:500">${aMean>0&&hMean>0?Math.round(hMean/aMean).toLocaleString()+'×':'-'}</td></tr></tbody></table>`;
 document.getElementById('distTable').innerHTML=dt;
 
 // Completion
 let ct='<table><thead><tr><th>Threshold</th><th>Auto</th><th>Human</th></tr></thead><tbody>';
 [[60,'Under 1 min'],[120,'Under 2 min'],[600,'Under 10 min'],[3600,'Under 1 hr']].forEach(([t,l])=>{
-  ct+=`<tr><td>${l}</td><td class="green" style="font-weight:600">${Math.round(aE2E.filter(v=>v<=t).length/aE2E.length*100)}%</td><td>${Math.round(hE2E.filter(v=>v<=t).length/hE2E.length*100)}%</td></tr>`;
+  ct+=`<tr><td>${l}</td><td class="green" style="font-weight:600">${aE2E.length?Math.round(aE2E.filter(v=>v<=t).length/aE2E.length*100):0}%</td><td>${hE2E.length?Math.round(hE2E.filter(v=>v<=t).length/hE2E.length*100):0}%</td></tr>`;
 });
 ct+='</tbody></table>';
 document.getElementById('compTable').innerHTML=ct;
 
-// ---------- FIXED CUMULATIVE CHART ----------
-// No time adapter required. Use numeric timestamps.
-const autoCumData = auto
-  .slice()
-  .sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
-  .map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
+// Invoice metrics
+document.getElementById('invoiceMetrics').innerHTML=[
+  {l:'Automation total',v:money(autoInvoiceTotal),c:'green'},
+  {l:'Human total',v:money(humanInvoiceTotal),c:'purple'},
+  {l:'Automation median/job',v:money(pct(aInv,50)),c:'green'},
+  {l:'Human median/job',v:money(pct(hInv,50)),c:'purple'}
+].map(m=>`<div class="m"><div class="ml">${m.l}</div><div class="mv ${m.c}">${m.v}</div></div>`).join('');
 
-const humanCumData = human
-  .slice()
-  .sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
-  .map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
+// Cumulative chart
+const autoSorted = auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+const humanSorted = human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+
+const autoCumData = autoSorted.map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
+const humanCumData = humanSorted.map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
 
 try {
   new Chart(document.getElementById('cumChart'),{
     type:'scatter',
     data:{datasets:[
-      {
-        label:'Auto',
-        data:autoCumData,
-        borderColor:'#4ade80',
-        backgroundColor:'rgba(74,222,128,0.7)',
-        pointRadius:2,
-        showLine:true,
-        borderWidth:1.5,
-        stepped:'after',
-        fill:false
-      },
-      {
-        label:'Human',
-        data:humanCumData,
-        borderColor:'#a78bfa',
-        backgroundColor:'rgba(167,139,250,0.7)',
-        pointRadius:2,
-        showLine:true,
-        borderWidth:1.5,
-        stepped:'after',
-        fill:false
-      }
+      {label:'Auto',data:autoCumData,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false},
+      {label:'Human',data:humanCumData,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false}
     ]},
     options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      parsing:false,
+      responsive:true,maintainAspectRatio:false,parsing:false,
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'#27272a',
-          titleColor:'#e8e6e1',
-          bodyColor:'#a1a1aa',
-          displayColors:false,
+          backgroundColor:'#27272a',titleColor:'#e8e6e1',bodyColor:'#a1a1aa',displayColors:false,
           callbacks:{
             title:ctx=>{
-              const ds=ctx[0].datasetIndex;
-              const src=ds===0
-                ? auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
-                : human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
-              return (ds===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
+              const src=ctx[0].datasetIndex===0 ? autoSorted : humanSorted;
+              return (ctx[0].datasetIndex===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
             },
             label:ctx=>{
-              const src=ctx.datasetIndex===0
-                ? auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup))
-                : human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+              const src=ctx.datasetIndex===0 ? autoSorted : humanSorted;
               const d=src[ctx.dataIndex];
-              return ['E2E: '+fmt(d.e2e),'#'+(ctx.dataIndex+1)+' cumulative'];
+              return ['E2E: '+fmt(d.e2e),'Invoice: '+money(d.amountToInvoice),'#'+(ctx.dataIndex+1)+' cumulative'];
             }
           }
         }
       },
       scales:{
-        x:{
-          type:'linear',
-          grid:{color:'rgba(255,255,255,0.06)'},
-          ticks:{
-            color:'rgba(255,255,255,0.4)',
-            font:{size:11},
-            callback:(value)=>{
-              return new Date(value).toLocaleDateString('en-US',{
-                month:'short',
-                day:'numeric'
-              });
-            }
-          }
-        },
-        y:{
-          grid:{color:'rgba(255,255,255,0.06)'},
-          ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},
-          beginAtZero:true,
-          title:{
-            display:true,
-            text:'Cumulative jobs',
-            color:'#52525b',
-            font:{size:11}
-          }
-        }
+        x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(value)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},
+        y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},beginAtZero:true,title:{display:true,text:'Cumulative jobs',color:'#52525b',font:{size:11}}}
       }
     }
   });
-} catch (e) {
-  console.error('cumChart failed:', e);
-}
+} catch (e) { console.error('cumChart failed:', e); }
 
-// Weekly chart
+// Invoice scatter chart
+const autoInvoiceScatter = autoSorted.map(j=>({x:new Date(j.estSetup).getTime(), y:Number(j.amountToInvoice)||0}));
+const humanInvoiceScatter = humanSorted.map(j=>({x:new Date(j.estSetup).getTime(), y:Number(j.amountToInvoice)||0}));
+try {
+  new Chart(document.getElementById('invoiceScatterChart'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Automation',data:autoInvoiceScatter,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.75)',pointRadius:4},
+      {label:'Human',data:humanInvoiceScatter,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.75)',pointRadius:4}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,parsing:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#27272a',titleColor:'#e8e6e1',bodyColor:'#a1a1aa',
+          callbacks:{
+            title:ctx=>{
+              const src=ctx[0].datasetIndex===0 ? autoSorted : humanSorted;
+              return (ctx[0].datasetIndex===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
+            },
+            label:ctx=>{
+              const src=ctx.datasetIndex===0 ? autoSorted : humanSorted;
+              const d=src[ctx.dataIndex];
+              return ['Invoice: '+money(d.amountToInvoice),'E2E: '+fmt(d.e2e)];
+            }
+          }
+        }
+      },
+      scales:{
+        x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(value)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},
+        y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(v)=>'$'+Number(v).toLocaleString()},beginAtZero:true,title:{display:true,text:'Amount to invoice',color:'#52525b',font:{size:11}}}
+      }
+    }
+  });
+} catch (e) { console.error('invoiceScatterChart failed:', e); }
+
+// Weekly volume chart
 const aW={},hW={};
 auto.forEach(j=>{const w=weekKey(j.estSetup);aW[w]=(aW[w]||0)+1});
 human.forEach(j=>{const w=weekKey(j.estSetup);hW[w]=(hW[w]||0)+1});
 const weeks=[...new Set([...Object.keys(aW),...Object.keys(hW)])].sort();
 const wLabels=weeks.map(w=>new Date(w+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}));
-
 try {
   new Chart(document.getElementById('weeklyChart'),{
     type:'bar',
@@ -306,12 +334,30 @@ try {
       y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11}},beginAtZero:true}
     }}
   });
-} catch (e) {
-  console.error('weeklyChart failed:', e);
-}
+} catch (e) { console.error('weeklyChart failed:', e); }
+
+// Weekly invoice totals chart
+const aInvW={}, hInvW={};
+auto.forEach(j=>{const w=weekKey(j.estSetup);aInvW[w]=(aInvW[w]||0)+(Number(j.amountToInvoice)||0)});
+human.forEach(j=>{const w=weekKey(j.estSetup);hInvW[w]=(hInvW[w]||0)+(Number(j.amountToInvoice)||0)});
+const invoiceWeeks=[...new Set([...Object.keys(aInvW),...Object.keys(hInvW)])].sort();
+const invoiceLabels=invoiceWeeks.map(w=>new Date(w+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+try {
+  new Chart(document.getElementById('invoiceWeeklyChart'),{
+    type:'bar',
+    data:{labels:invoiceLabels,datasets:[
+      {label:'Automation',data:invoiceWeeks.map(w=>Math.round((aInvW[w]||0)*100)/100),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
+      {label:'Human',data:invoiceWeeks.map(w=>Math.round((hInvW[w]||0)*100)/100),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+money(ctx.parsed.y)}}},scales:{
+      x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.4)',font:{size:10},maxRotation:45}},
+      y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(v)=>'$'+Number(v).toLocaleString()},beginAtZero:true,title:{display:true,text:'Weekly invoice total',color:'#52525b',font:{size:11}}}
+    }}
+  });
+} catch (e) { console.error('invoiceWeeklyChart failed:', e); }
 
 // Footer
-document.getElementById('footNote').textContent='Data source: PACE job + estimate history. Estimate Entry DateTime to last job entry action by entering user. Generated '+PACE_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs (EZEP/payapi), '+human.length+' human jobs (YATC).';
+document.getElementById('footNote').textContent='Data source: PACE job + estimate history. Estimate Entry DateTime to last job entry action by entering user, with one Amount To Invoice value preserved per job and summed across the dashboard. Generated '+PACE_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs (EZEP/payapi), '+human.length+' human jobs (YATC).';
 </script>
 </body>
 </html>
