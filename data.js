@@ -1,14 +1,14 @@
-// PACE Dashboard Data — generated 2026-03-25
-// Auto: 302 jobs | Human: 138 jobs
-// Total invoice: $122,888.57
+// PACE Dashboard Data — generated 2026-03-27
+// Auto: 363 jobs | Human: 171 jobs
+// Total invoice: $163,175.72
 const PACE_DATA = {
-  "generated": "2026-03-25T17:34:25.819Z",
+  "generated": "2026-03-27T21:53:13.272Z",
   "summary": {
-    "autoJobs": 302,
-    "humanJobs": 138,
-    "autoInvoiceTotal": 31955.39,
-    "humanInvoiceTotal": 90933.18,
-    "grandInvoiceTotal": 122888.57
+    "autoJobs": 363,
+    "humanJobs": 171,
+    "autoInvoiceTotal": 42264.67,
+    "humanInvoiceTotal": 120911.05,
+    "grandInvoiceTotal": 163175.72
   },
   "auto": [
     {
@@ -2728,6 +2728,555 @@ const PACE_DATA = {
       "e2e": 16,
       "nActions": 57,
       "amountToInvoice": 74.88
+    },
+    {
+      "job": 534933,
+      "estSetup": "2026-03-16T11:19:23.000Z",
+      "jobSetup": "2026-03-16T11:20:34.000Z",
+      "lastAction": "2026-03-16T11:26:03.000Z",
+      "e2e": 400,
+      "nActions": 84,
+      "amountToInvoice": 157
+    },
+    {
+      "job": 534978,
+      "estSetup": "2026-03-16T13:09:27.000Z",
+      "jobSetup": "2026-03-16T13:10:18.000Z",
+      "lastAction": "2026-03-16T13:10:53.000Z",
+      "e2e": 86,
+      "nActions": 92,
+      "amountToInvoice": 115.33
+    },
+    {
+      "job": 534979,
+      "estSetup": "2026-03-16T13:09:29.000Z",
+      "jobSetup": "2026-03-16T13:10:31.000Z",
+      "lastAction": "2026-03-16T13:11:00.000Z",
+      "e2e": 91,
+      "nActions": 103,
+      "amountToInvoice": 863.88
+    },
+    {
+      "job": 534980,
+      "estSetup": "2026-03-16T13:09:31.000Z",
+      "jobSetup": "2026-03-16T13:10:36.000Z",
+      "lastAction": "2026-03-16T13:11:11.000Z",
+      "e2e": 100,
+      "nActions": 98,
+      "amountToInvoice": 523.62
+    },
+    {
+      "job": 535079,
+      "estSetup": "2026-03-16T18:17:38.000Z",
+      "jobSetup": "2026-03-16T18:17:59.000Z",
+      "lastAction": "2026-03-16T18:18:31.000Z",
+      "e2e": 53,
+      "nActions": 62,
+      "amountToInvoice": 42
+    },
+    {
+      "job": 535081,
+      "estSetup": "2026-03-16T18:18:58.000Z",
+      "jobSetup": "2026-03-16T18:19:20.000Z",
+      "lastAction": "2026-03-16T18:19:47.000Z",
+      "e2e": 49,
+      "nActions": 61,
+      "amountToInvoice": 7.28
+    },
+    {
+      "job": 535082,
+      "estSetup": "2026-03-16T18:20:14.000Z",
+      "jobSetup": "2026-03-16T18:20:36.000Z",
+      "lastAction": "2026-03-16T18:21:07.000Z",
+      "e2e": 53,
+      "nActions": 62,
+      "amountToInvoice": 0.28
+    },
+    {
+      "job": 535083,
+      "estSetup": "2026-03-16T18:21:36.000Z",
+      "jobSetup": "2026-03-16T18:21:50.000Z",
+      "lastAction": "2026-03-16T18:22:32.000Z",
+      "e2e": 56,
+      "nActions": 57,
+      "amountToInvoice": 74.55
+    },
+    {
+      "job": 535084,
+      "estSetup": "2026-03-16T18:22:58.000Z",
+      "jobSetup": "2026-03-16T18:23:10.000Z",
+      "lastAction": "2026-03-16T18:23:31.000Z",
+      "e2e": 33,
+      "nActions": 59,
+      "amountToInvoice": 1.8
+    },
+    {
+      "job": 535086,
+      "estSetup": "2026-03-16T18:23:56.000Z",
+      "jobSetup": "2026-03-16T18:24:08.000Z",
+      "lastAction": "2026-03-16T18:24:31.000Z",
+      "e2e": 35,
+      "nActions": 58,
+      "amountToInvoice": 4.5
+    },
+    {
+      "job": 535088,
+      "estSetup": "2026-03-16T18:24:57.000Z",
+      "jobSetup": "2026-03-16T18:25:21.000Z",
+      "lastAction": "2026-03-16T18:25:55.000Z",
+      "e2e": 58,
+      "nActions": 62,
+      "amountToInvoice": 92.62
+    },
+    {
+      "job": 535090,
+      "estSetup": "2026-03-16T18:26:22.000Z",
+      "jobSetup": "2026-03-16T18:26:37.000Z",
+      "lastAction": "2026-03-16T18:27:00.000Z",
+      "e2e": 38,
+      "nActions": 56,
+      "amountToInvoice": 34.35
+    },
+    {
+      "job": 535091,
+      "estSetup": "2026-03-16T18:27:25.000Z",
+      "jobSetup": "2026-03-16T18:27:39.000Z",
+      "lastAction": "2026-03-16T18:28:00.000Z",
+      "e2e": 35,
+      "nActions": 60,
+      "amountToInvoice": 1.2
+    },
+    {
+      "job": 535092,
+      "estSetup": "2026-03-16T18:28:27.000Z",
+      "jobSetup": "2026-03-16T18:28:51.000Z",
+      "lastAction": "2026-03-16T18:29:17.000Z",
+      "e2e": 50,
+      "nActions": 59,
+      "amountToInvoice": 150.64
+    },
+    {
+      "job": 535093,
+      "estSetup": "2026-03-16T18:29:46.000Z",
+      "jobSetup": "2026-03-16T18:30:11.000Z",
+      "lastAction": "2026-03-16T18:30:38.000Z",
+      "e2e": 52,
+      "nActions": 76,
+      "amountToInvoice": 58.52
+    },
+    {
+      "job": 535095,
+      "estSetup": "2026-03-16T18:31:05.000Z",
+      "jobSetup": "2026-03-16T18:31:29.000Z",
+      "lastAction": "2026-03-16T18:31:56.000Z",
+      "e2e": 51,
+      "nActions": 60,
+      "amountToInvoice": 119.56
+    },
+    {
+      "job": 535119,
+      "estSetup": "2026-03-16T20:28:02.000Z",
+      "jobSetup": "2026-03-16T20:28:10.000Z",
+      "lastAction": "2026-03-16T20:28:20.000Z",
+      "e2e": 18,
+      "nActions": 65,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 535120,
+      "estSetup": "2026-03-16T20:39:35.000Z",
+      "jobSetup": "2026-03-16T20:39:43.000Z",
+      "lastAction": "2026-03-16T20:39:52.000Z",
+      "e2e": 17,
+      "nActions": 48,
+      "amountToInvoice": 21
+    },
+    {
+      "job": 535147,
+      "estSetup": "2026-03-17T10:28:34.000Z",
+      "jobSetup": "2026-03-17T10:29:42.000Z",
+      "lastAction": "2026-03-17T10:35:30.000Z",
+      "e2e": 416,
+      "nActions": 88,
+      "amountToInvoice": 157.4
+    },
+    {
+      "job": 535225,
+      "estSetup": "2026-03-17T13:09:54.000Z",
+      "jobSetup": "2026-03-17T13:10:30.000Z",
+      "lastAction": "2026-03-17T13:19:00.000Z",
+      "e2e": 546,
+      "nActions": 72,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 535236,
+      "estSetup": "2026-03-17T13:40:04.000Z",
+      "jobSetup": "2026-03-17T13:40:22.000Z",
+      "lastAction": "2026-03-17T13:40:26.000Z",
+      "e2e": 22,
+      "nActions": 76,
+      "amountToInvoice": 105.5
+    },
+    {
+      "job": 535237,
+      "estSetup": "2026-03-17T13:40:07.000Z",
+      "jobSetup": "2026-03-17T13:40:41.000Z",
+      "lastAction": "2026-03-17T13:41:02.000Z",
+      "e2e": 55,
+      "nActions": 88,
+      "amountToInvoice": 853.68
+    },
+    {
+      "job": 535238,
+      "estSetup": "2026-03-17T13:40:11.000Z",
+      "jobSetup": "2026-03-17T13:41:05.000Z",
+      "lastAction": "2026-03-17T13:41:35.000Z",
+      "e2e": 84,
+      "nActions": 94,
+      "amountToInvoice": 227.4
+    },
+    {
+      "job": 535242,
+      "estSetup": "2026-03-17T13:51:18.000Z",
+      "jobSetup": "2026-03-17T13:51:28.000Z",
+      "lastAction": "2026-03-17T13:51:43.000Z",
+      "e2e": 25,
+      "nActions": 63,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 535243,
+      "estSetup": "2026-03-17T13:52:33.000Z",
+      "jobSetup": "2026-03-17T13:52:53.000Z",
+      "lastAction": "2026-03-17T13:53:08.000Z",
+      "e2e": 35,
+      "nActions": 60,
+      "amountToInvoice": 231
+    },
+    {
+      "job": 535369,
+      "estSetup": "2026-03-17T18:10:34.000Z",
+      "jobSetup": "2026-03-17T18:11:10.000Z",
+      "lastAction": "2026-03-17T18:11:25.000Z",
+      "e2e": 51,
+      "nActions": 58,
+      "amountToInvoice": 145
+    },
+    {
+      "job": 535371,
+      "estSetup": "2026-03-17T18:13:05.000Z",
+      "jobSetup": "2026-03-17T18:13:22.000Z",
+      "lastAction": "2026-03-17T18:13:43.000Z",
+      "e2e": 38,
+      "nActions": 67,
+      "amountToInvoice": 283
+    },
+    {
+      "job": 535441,
+      "estSetup": "2026-03-17T21:23:07.000Z",
+      "jobSetup": "2026-03-17T21:23:14.000Z",
+      "lastAction": "2026-03-17T21:23:23.000Z",
+      "e2e": 16,
+      "nActions": 49,
+      "amountToInvoice": 80
+    },
+    {
+      "job": 535516,
+      "estSetup": "2026-03-18T13:15:38.000Z",
+      "jobSetup": "2026-03-18T13:16:30.000Z",
+      "lastAction": "2026-03-18T13:16:52.000Z",
+      "e2e": 74,
+      "nActions": 67,
+      "amountToInvoice": 858.05
+    },
+    {
+      "job": 535514,
+      "estSetup": "2026-03-18T13:15:41.000Z",
+      "jobSetup": "2026-03-18T13:16:27.000Z",
+      "lastAction": "2026-03-18T13:16:53.000Z",
+      "e2e": 72,
+      "nActions": 97,
+      "amountToInvoice": 258.17
+    },
+    {
+      "job": 535526,
+      "estSetup": "2026-03-18T13:40:12.000Z",
+      "jobSetup": "2026-03-18T13:41:25.000Z",
+      "lastAction": "2026-03-18T13:45:52.000Z",
+      "e2e": 340,
+      "nActions": 81,
+      "amountToInvoice": 156
+    },
+    {
+      "job": 535751,
+      "estSetup": "2026-03-19T12:17:19.000Z",
+      "jobSetup": "2026-03-19T12:18:14.000Z",
+      "lastAction": "2026-03-19T12:21:15.000Z",
+      "e2e": 236,
+      "nActions": 77,
+      "amountToInvoice": 155.9
+    },
+    {
+      "job": 535755,
+      "estSetup": "2026-03-19T12:31:52.000Z",
+      "jobSetup": "2026-03-19T12:32:10.000Z",
+      "lastAction": "2026-03-19T12:36:15.000Z",
+      "e2e": 263,
+      "nActions": 84,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 535760,
+      "estSetup": "2026-03-19T12:41:34.000Z",
+      "jobSetup": "2026-03-19T12:42:02.000Z",
+      "lastAction": "2026-03-19T12:46:56.000Z",
+      "e2e": 322,
+      "nActions": 69,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 535770,
+      "estSetup": "2026-03-19T13:02:56.000Z",
+      "jobSetup": "2026-03-19T13:03:14.000Z",
+      "lastAction": "2026-03-19T13:03:26.000Z",
+      "e2e": 30,
+      "nActions": 79,
+      "amountToInvoice": 50.3
+    },
+    {
+      "job": 535771,
+      "estSetup": "2026-03-19T13:02:59.000Z",
+      "jobSetup": "2026-03-19T13:03:44.000Z",
+      "lastAction": "2026-03-19T13:04:01.000Z",
+      "e2e": 62,
+      "nActions": 69,
+      "amountToInvoice": 828.15
+    },
+    {
+      "job": 535772,
+      "estSetup": "2026-03-19T13:03:03.000Z",
+      "jobSetup": "2026-03-19T13:03:58.000Z",
+      "lastAction": "2026-03-19T13:04:33.000Z",
+      "e2e": 90,
+      "nActions": 94,
+      "amountToInvoice": 268.13
+    },
+    {
+      "job": 535784,
+      "estSetup": "2026-03-19T13:31:37.000Z",
+      "jobSetup": "2026-03-19T13:32:16.000Z",
+      "lastAction": "2026-03-19T13:32:53.000Z",
+      "e2e": 76,
+      "nActions": 91,
+      "amountToInvoice": 249.11
+    },
+    {
+      "job": 535826,
+      "estSetup": "2026-03-19T13:51:21.000Z",
+      "jobSetup": "2026-03-19T13:51:44.000Z",
+      "lastAction": "2026-03-19T13:52:14.000Z",
+      "e2e": 53,
+      "nActions": 62,
+      "amountToInvoice": 0.28
+    },
+    {
+      "job": 535827,
+      "estSetup": "2026-03-19T13:52:45.000Z",
+      "jobSetup": "2026-03-19T13:53:08.000Z",
+      "lastAction": "2026-03-19T13:53:38.000Z",
+      "e2e": 53,
+      "nActions": 63,
+      "amountToInvoice": 0.28
+    },
+    {
+      "job": 535828,
+      "estSetup": "2026-03-19T13:54:06.000Z",
+      "jobSetup": "2026-03-19T13:54:30.000Z",
+      "lastAction": "2026-03-19T13:54:58.000Z",
+      "e2e": 52,
+      "nActions": 63,
+      "amountToInvoice": 0.28
+    },
+    {
+      "job": 535829,
+      "estSetup": "2026-03-19T13:55:29.000Z",
+      "jobSetup": "2026-03-19T13:55:52.000Z",
+      "lastAction": "2026-03-19T13:56:23.000Z",
+      "e2e": 54,
+      "nActions": 62,
+      "amountToInvoice": 0.84
+    },
+    {
+      "job": 535830,
+      "estSetup": "2026-03-19T13:56:50.000Z",
+      "jobSetup": "2026-03-19T13:57:13.000Z",
+      "lastAction": "2026-03-19T13:57:45.000Z",
+      "e2e": 55,
+      "nActions": 61,
+      "amountToInvoice": 0.19
+    },
+    {
+      "job": 535831,
+      "estSetup": "2026-03-19T13:58:13.000Z",
+      "jobSetup": "2026-03-19T13:58:36.000Z",
+      "lastAction": "2026-03-19T13:59:04.000Z",
+      "e2e": 51,
+      "nActions": 62,
+      "amountToInvoice": 6.16
+    },
+    {
+      "job": 535832,
+      "estSetup": "2026-03-19T13:59:34.000Z",
+      "jobSetup": "2026-03-19T13:59:58.000Z",
+      "lastAction": "2026-03-19T14:00:31.000Z",
+      "e2e": 57,
+      "nActions": 62,
+      "amountToInvoice": 6.72
+    },
+    {
+      "job": 535834,
+      "estSetup": "2026-03-19T14:01:04.000Z",
+      "jobSetup": "2026-03-19T14:01:31.000Z",
+      "lastAction": "2026-03-19T14:02:08.000Z",
+      "e2e": 64,
+      "nActions": 62,
+      "amountToInvoice": 0.56
+    },
+    {
+      "job": 535836,
+      "estSetup": "2026-03-19T14:02:41.000Z",
+      "jobSetup": "2026-03-19T14:03:05.000Z",
+      "lastAction": "2026-03-19T14:03:41.000Z",
+      "e2e": 60,
+      "nActions": 63,
+      "amountToInvoice": 0.28
+    },
+    {
+      "job": 535838,
+      "estSetup": "2026-03-19T14:04:15.000Z",
+      "jobSetup": "2026-03-19T14:04:30.000Z",
+      "lastAction": "2026-03-19T14:05:04.000Z",
+      "e2e": 49,
+      "nActions": 54,
+      "amountToInvoice": 101.4
+    },
+    {
+      "job": 535840,
+      "estSetup": "2026-03-19T14:05:32.000Z",
+      "jobSetup": "2026-03-19T14:05:56.000Z",
+      "lastAction": "2026-03-19T14:06:28.000Z",
+      "e2e": 56,
+      "nActions": 61,
+      "amountToInvoice": 9.52
+    },
+    {
+      "job": 535841,
+      "estSetup": "2026-03-19T14:07:00.000Z",
+      "jobSetup": "2026-03-19T14:07:24.000Z",
+      "lastAction": "2026-03-19T14:07:59.000Z",
+      "e2e": 59,
+      "nActions": 62,
+      "amountToInvoice": 0.56
+    },
+    {
+      "job": 535886,
+      "estSetup": "2026-03-19T16:05:03.000Z",
+      "jobSetup": "2026-03-19T16:05:19.000Z",
+      "lastAction": "2026-03-19T16:05:34.000Z",
+      "e2e": 31,
+      "nActions": 59,
+      "amountToInvoice": 84.68
+    },
+    {
+      "job": 536031,
+      "estSetup": "2026-03-20T11:59:10.000Z",
+      "jobSetup": "2026-03-20T12:00:19.000Z",
+      "lastAction": "2026-03-20T12:04:08.000Z",
+      "e2e": 298,
+      "nActions": 83,
+      "amountToInvoice": 157.9
+    },
+    {
+      "job": 536070,
+      "estSetup": "2026-03-20T12:53:00.000Z",
+      "jobSetup": "2026-03-20T12:53:29.000Z",
+      "lastAction": "2026-03-20T12:58:13.000Z",
+      "e2e": 313,
+      "nActions": 82,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 536073,
+      "estSetup": "2026-03-20T13:00:57.000Z",
+      "jobSetup": "2026-03-20T13:01:17.000Z",
+      "lastAction": "2026-03-20T13:12:25.000Z",
+      "e2e": 688,
+      "nActions": 82,
+      "amountToInvoice": 125
+    },
+    {
+      "job": 536082,
+      "estSetup": "2026-03-20T13:29:13.000Z",
+      "jobSetup": "2026-03-20T13:30:17.000Z",
+      "lastAction": "2026-03-20T13:32:04.000Z",
+      "e2e": 171,
+      "nActions": 103,
+      "amountToInvoice": 486.2
+    },
+    {
+      "job": 536086,
+      "estSetup": "2026-03-20T14:07:04.000Z",
+      "jobSetup": "2026-03-20T14:07:14.000Z",
+      "lastAction": "2026-03-20T14:07:23.000Z",
+      "e2e": 19,
+      "nActions": 53,
+      "amountToInvoice": 77
+    },
+    {
+      "job": 536087,
+      "estSetup": "2026-03-20T14:08:18.000Z",
+      "jobSetup": "2026-03-20T14:08:25.000Z",
+      "lastAction": "2026-03-20T14:08:35.000Z",
+      "e2e": 17,
+      "nActions": 39,
+      "amountToInvoice": 48
+    },
+    {
+      "job": 536091,
+      "estSetup": "2026-03-20T14:27:23.000Z",
+      "jobSetup": "2026-03-20T14:28:06.000Z",
+      "lastAction": "2026-03-20T14:28:23.000Z",
+      "e2e": 60,
+      "nActions": 68,
+      "amountToInvoice": 850.36
+    },
+    {
+      "job": 536090,
+      "estSetup": "2026-03-20T14:27:24.000Z",
+      "jobSetup": "2026-03-20T14:27:51.000Z",
+      "lastAction": "2026-03-20T14:28:11.000Z",
+      "e2e": 47,
+      "nActions": 88,
+      "amountToInvoice": 180.55
+    },
+    {
+      "job": 536260,
+      "estSetup": "2026-03-20T21:14:28.000Z",
+      "jobSetup": "2026-03-20T21:14:43.000Z",
+      "lastAction": "2026-03-20T21:15:03.000Z",
+      "e2e": 35,
+      "nActions": 61,
+      "amountToInvoice": 235
+    },
+    {
+      "job": 536261,
+      "estSetup": "2026-03-20T21:16:48.000Z",
+      "jobSetup": "2026-03-20T21:16:55.000Z",
+      "lastAction": "2026-03-20T21:17:04.000Z",
+      "e2e": 16,
+      "nActions": 43,
+      "amountToInvoice": 12.6
     }
   ],
   "human": [
@@ -3173,6 +3722,15 @@ const PACE_DATA = {
       "amountToInvoice": 700.5
     },
     {
+      "job": 535991,
+      "estSetup": "2026-02-20T16:42:35.000Z",
+      "jobSetup": "2026-03-19T20:09:09.000Z",
+      "lastAction": "2026-03-19T20:18:02.000Z",
+      "e2e": 2345727,
+      "nActions": 62,
+      "amountToInvoice": 478.2
+    },
+    {
       "job": 530462,
       "estSetup": "2026-02-23T13:36:27.000Z",
       "jobSetup": "2026-02-23T21:47:28.000Z",
@@ -3459,6 +4017,15 @@ const PACE_DATA = {
       "e2e": 91969,
       "nActions": 140,
       "amountToInvoice": 4012.54
+    },
+    {
+      "job": 535556,
+      "estSetup": "2026-02-27T16:31:12.000Z",
+      "jobSetup": "2026-03-18T14:53:17.000Z",
+      "lastAction": "2026-03-18T15:35:24.000Z",
+      "e2e": 1638252,
+      "nActions": 133,
+      "amountToInvoice": 869.75
     },
     {
       "job": 532348,
@@ -3839,6 +4406,15 @@ const PACE_DATA = {
       "amountToInvoice": 549.05
     },
     {
+      "job": 536071,
+      "estSetup": "2026-03-05T22:00:24.000Z",
+      "jobSetup": "2026-03-20T12:54:34.000Z",
+      "lastAction": "2026-03-20T13:06:59.000Z",
+      "e2e": 1263995,
+      "nActions": 56,
+      "amountToInvoice": 587.66
+    },
+    {
       "job": 533557,
       "estSetup": "2026-03-06T16:53:51.000Z",
       "jobSetup": "2026-03-09T16:28:37.000Z",
@@ -3972,6 +4548,276 @@ const PACE_DATA = {
       "e2e": 18630,
       "nActions": 54,
       "amountToInvoice": 1406.65
+    },
+    {
+      "job": 534987,
+      "estSetup": "2026-03-13T13:20:01.000Z",
+      "jobSetup": "2026-03-16T13:18:26.000Z",
+      "lastAction": "2026-03-16T13:37:11.000Z",
+      "e2e": 260230,
+      "nActions": 127,
+      "amountToInvoice": 150
+    },
+    {
+      "job": 535227,
+      "estSetup": "2026-03-16T14:51:56.000Z",
+      "jobSetup": "2026-03-17T13:16:26.000Z",
+      "lastAction": "2026-03-17T13:24:25.000Z",
+      "e2e": 81149,
+      "nActions": 84,
+      "amountToInvoice": 2307.5
+    },
+    {
+      "job": 535212,
+      "estSetup": "2026-03-16T17:09:53.000Z",
+      "jobSetup": "2026-03-17T12:40:28.000Z",
+      "lastAction": "2026-03-17T12:49:05.000Z",
+      "e2e": 70752,
+      "nActions": 89,
+      "amountToInvoice": 1794.45
+    },
+    {
+      "job": 535234,
+      "estSetup": "2026-03-16T19:32:59.000Z",
+      "jobSetup": "2026-03-17T13:32:14.000Z",
+      "lastAction": "2026-03-17T14:30:36.000Z",
+      "e2e": 68257,
+      "nActions": 108,
+      "amountToInvoice": 553.25
+    },
+    {
+      "job": 535553,
+      "estSetup": "2026-03-17T15:46:22.000Z",
+      "jobSetup": "2026-03-18T14:36:00.000Z",
+      "lastAction": "2026-03-18T14:50:03.000Z",
+      "e2e": 83021,
+      "nActions": 84,
+      "amountToInvoice": 512.92
+    },
+    {
+      "job": 535983,
+      "estSetup": "2026-03-17T18:12:01.000Z",
+      "jobSetup": "2026-03-19T19:29:58.000Z",
+      "lastAction": "2026-03-19T20:06:22.000Z",
+      "e2e": 179661,
+      "nActions": 101,
+      "amountToInvoice": 415.07
+    },
+    {
+      "job": 535660,
+      "estSetup": "2026-03-17T19:00:52.000Z",
+      "jobSetup": "2026-03-18T18:49:05.000Z",
+      "lastAction": "2026-03-18T19:22:15.000Z",
+      "e2e": 87683,
+      "nActions": 115,
+      "amountToInvoice": 362.65
+    },
+    {
+      "job": 535643,
+      "estSetup": "2026-03-17T19:12:20.000Z",
+      "jobSetup": "2026-03-18T17:57:13.000Z",
+      "lastAction": "2026-03-18T18:02:50.000Z",
+      "e2e": 82230,
+      "nActions": 123,
+      "amountToInvoice": 223.08
+    },
+    {
+      "job": 535590,
+      "estSetup": "2026-03-17T19:24:24.000Z",
+      "jobSetup": "2026-03-18T15:56:50.000Z",
+      "lastAction": "2026-03-18T16:02:23.000Z",
+      "e2e": 74279,
+      "nActions": 54,
+      "amountToInvoice": 20
+    },
+    {
+      "job": 535573,
+      "estSetup": "2026-03-17T19:26:37.000Z",
+      "jobSetup": "2026-03-18T15:13:56.000Z",
+      "lastAction": "2026-03-18T15:19:58.000Z",
+      "e2e": 71601,
+      "nActions": 46,
+      "amountToInvoice": 317.37
+    },
+    {
+      "job": 535646,
+      "estSetup": "2026-03-17T19:30:25.000Z",
+      "jobSetup": "2026-03-18T18:06:51.000Z",
+      "lastAction": "2026-03-18T18:12:00.000Z",
+      "e2e": 81695,
+      "nActions": 90,
+      "amountToInvoice": 1300
+    },
+    {
+      "job": 535635,
+      "estSetup": "2026-03-17T19:39:08.000Z",
+      "jobSetup": "2026-03-18T17:37:29.000Z",
+      "lastAction": "2026-03-18T17:47:17.000Z",
+      "e2e": 79689,
+      "nActions": 79,
+      "amountToInvoice": 681.23
+    },
+    {
+      "job": 535428,
+      "estSetup": "2026-03-17T19:54:02.000Z",
+      "jobSetup": "2026-03-17T20:48:54.000Z",
+      "lastAction": "2026-03-17T20:49:37.000Z",
+      "e2e": 3335,
+      "nActions": 59,
+      "amountToInvoice": 360
+    },
+    {
+      "job": 535576,
+      "estSetup": "2026-03-17T20:02:44.000Z",
+      "jobSetup": "2026-03-18T15:21:30.000Z",
+      "lastAction": "2026-03-18T15:25:13.000Z",
+      "e2e": 69749,
+      "nActions": 55,
+      "amountToInvoice": 75
+    },
+    {
+      "job": 535890,
+      "estSetup": "2026-03-18T14:21:39.000Z",
+      "jobSetup": "2026-03-19T16:18:52.000Z",
+      "lastAction": "2026-03-19T16:24:36.000Z",
+      "e2e": 93777,
+      "nActions": 67,
+      "amountToInvoice": 246.59
+    },
+    {
+      "job": 535870,
+      "estSetup": "2026-03-18T14:27:18.000Z",
+      "jobSetup": "2026-03-19T15:30:48.000Z",
+      "lastAction": "2026-03-19T15:43:42.000Z",
+      "e2e": 90984,
+      "nActions": 75,
+      "amountToInvoice": 120.77
+    },
+    {
+      "job": 535887,
+      "estSetup": "2026-03-18T14:29:36.000Z",
+      "jobSetup": "2026-03-19T16:05:24.000Z",
+      "lastAction": "2026-03-19T16:34:19.000Z",
+      "e2e": 93883,
+      "nActions": 64,
+      "amountToInvoice": 890.42
+    },
+    {
+      "job": 535649,
+      "estSetup": "2026-03-18T14:56:30.000Z",
+      "jobSetup": "2026-03-18T18:16:56.000Z",
+      "lastAction": "2026-03-18T18:32:28.000Z",
+      "e2e": 12958,
+      "nActions": 94,
+      "amountToInvoice": 739.98
+    },
+    {
+      "job": 535860,
+      "estSetup": "2026-03-18T15:05:49.000Z",
+      "jobSetup": "2026-03-19T14:37:22.000Z",
+      "lastAction": "2026-03-19T14:57:55.000Z",
+      "e2e": 85926,
+      "nActions": 81,
+      "amountToInvoice": 186.64
+    },
+    {
+      "job": 535861,
+      "estSetup": "2026-03-18T15:09:32.000Z",
+      "jobSetup": "2026-03-19T14:39:09.000Z",
+      "lastAction": "2026-03-19T15:10:30.000Z",
+      "e2e": 86458,
+      "nActions": 72,
+      "amountToInvoice": 253.97
+    },
+    {
+      "job": 535777,
+      "estSetup": "2026-03-18T15:25:03.000Z",
+      "jobSetup": "2026-03-19T13:17:04.000Z",
+      "lastAction": "2026-03-19T14:01:52.000Z",
+      "e2e": 81409,
+      "nActions": 84,
+      "amountToInvoice": 150
+    },
+    {
+      "job": 535845,
+      "estSetup": "2026-03-18T15:48:37.000Z",
+      "jobSetup": "2026-03-19T14:18:33.000Z",
+      "lastAction": "2026-03-19T14:26:18.000Z",
+      "e2e": 81461,
+      "nActions": 72,
+      "amountToInvoice": 107.53
+    },
+    {
+      "job": 535837,
+      "estSetup": "2026-03-18T15:53:45.000Z",
+      "jobSetup": "2026-03-19T14:03:55.000Z",
+      "lastAction": "2026-03-19T14:12:39.000Z",
+      "e2e": 80334,
+      "nActions": 69,
+      "amountToInvoice": 96.59
+    },
+    {
+      "job": 535774,
+      "estSetup": "2026-03-18T15:58:33.000Z",
+      "jobSetup": "2026-03-19T13:09:26.000Z",
+      "lastAction": "2026-03-19T13:15:35.000Z",
+      "e2e": 76622,
+      "nActions": 55,
+      "amountToInvoice": 88.26
+    },
+    {
+      "job": 535763,
+      "estSetup": "2026-03-18T17:39:46.000Z",
+      "jobSetup": "2026-03-19T12:48:22.000Z",
+      "lastAction": "2026-03-19T12:56:34.000Z",
+      "e2e": 69408,
+      "nActions": 88,
+      "amountToInvoice": 1212.9
+    },
+    {
+      "job": 535995,
+      "estSetup": "2026-03-19T15:22:03.000Z",
+      "jobSetup": "2026-03-19T20:31:21.000Z",
+      "lastAction": "2026-03-19T20:34:17.000Z",
+      "e2e": 18734,
+      "nActions": 69,
+      "amountToInvoice": 6932.5
+    },
+    {
+      "job": 535996,
+      "estSetup": "2026-03-19T15:25:36.000Z",
+      "jobSetup": "2026-03-19T20:42:03.000Z",
+      "lastAction": "2026-03-19T20:48:11.000Z",
+      "e2e": 19355,
+      "nActions": 44,
+      "amountToInvoice": 750
+    },
+    {
+      "job": 535999,
+      "estSetup": "2026-03-19T15:42:44.000Z",
+      "jobSetup": "2026-03-19T20:50:46.000Z",
+      "lastAction": "2026-03-19T20:50:48.000Z",
+      "e2e": 18484,
+      "nActions": 70,
+      "amountToInvoice": 2028.59
+    },
+    {
+      "job": 536107,
+      "estSetup": "2026-03-19T19:45:33.000Z",
+      "jobSetup": "2026-03-20T15:37:57.000Z",
+      "lastAction": "2026-03-20T15:38:00.000Z",
+      "e2e": 71547,
+      "nActions": 90,
+      "amountToInvoice": 5150
+    },
+    {
+      "job": 536187,
+      "estSetup": "2026-03-19T21:03:07.000Z",
+      "jobSetup": "2026-03-20T18:10:13.000Z",
+      "lastAction": "2026-03-20T18:33:10.000Z",
+      "e2e": 77403,
+      "nActions": 67,
+      "amountToInvoice": 15
     }
   ]
 };
