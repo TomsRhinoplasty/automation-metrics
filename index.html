@@ -334,11 +334,13 @@ function cumTooltipHandler(context) {
 
   const color = isAuto ? '#4ade80' : '#a78bfa';
   const label = isAuto ? 'AUTO' : 'HUMAN';
-  const date = new Date(d.estSetup).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  const dtOpts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+  const startDate = new Date(d.estSetup).toLocaleDateString('en-US', dtOpts);
+  const endDate = new Date(d.lastAction).toLocaleDateString('en-US', dtOpts);
 
   el.innerHTML =
     '<div style="font-weight:600;color:' + color + ';margin-bottom:4px;font-size:13px">' + label + ' — Job #' + d.job + '</div>' +
-    '<div style="color:#a1a1aa">' + date + '</div>' +
+    '<div style="color:#a1a1aa;font-size:11px">' + startDate + '&nbsp; → &nbsp;' + endDate + '</div>' +
     '<div style="display:flex;gap:16px;margin-top:6px">' +
       '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">E2E</span><br><span style="font-family:DM Mono,monospace;font-weight:500;color:#fbbf24">' + fmt(d.e2e) + '</span></div>' +
       '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Invoice</span><br><span style="font-family:DM Mono,monospace;font-weight:500">' + money(d.amountToInvoice) + '</span></div>' +
@@ -404,11 +406,13 @@ function invTooltipHandler(context) {
   if (!d) { el.style.opacity = 0; return; }
   const color = isAuto ? '#4ade80' : '#a78bfa';
   const label = isAuto ? 'AUTO' : 'HUMAN';
-  const date = new Date(d.estSetup).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  const dtOpts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+  const startDate = new Date(d.estSetup).toLocaleDateString('en-US', dtOpts);
+  const endDate = new Date(d.lastAction).toLocaleDateString('en-US', dtOpts);
 
   el.innerHTML =
     '<div style="font-weight:600;color:' + color + ';margin-bottom:4px;font-size:13px">' + label + ' — Job #' + d.job + '</div>' +
-    '<div style="color:#a1a1aa">' + date + '</div>' +
+    '<div style="color:#a1a1aa;font-size:11px">' + startDate + '&nbsp; → &nbsp;' + endDate + '</div>' +
     '<div style="display:flex;gap:16px;margin-top:6px">' +
       '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Invoice</span><br><span style="font-family:DM Mono,monospace;font-weight:500">' + money(d.amountToInvoice) + '</span></div>' +
       '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">E2E</span><br><span style="font-family:DM Mono,monospace;font-weight:500;color:#fbbf24">' + fmt(d.e2e) + '</span></div>' +
