@@ -205,20 +205,32 @@ document.getElementById('updated').textContent='Data as of '+PACE_DATA.generated
 // Hero — toggle-driven
 const startDate = new Date('2026-02-11');
 const now = new Date(PACE_DATA.generated);
-const totalDays = Math.max(1, Math.round((now - startDate) / 86400000));
 
-// Daily rates
-const autoDailyMedian = auto.length / totalDays;
-const humanDailyMedian = human.length / totalDays;
+// Count Mon–Fri workdays in the date range
+function countWorkdays(start, end) {
+  let count = 0;
+  const d = new Date(start);
+  while (d <= end) {
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return Math.max(1, count);
+}
+const totalWorkdays = countWorkdays(startDate, now);
 
-// Per-day counts for mean calculation
+// Daily rates — workday-based
+const autoDailyOverall = auto.length / totalWorkdays;
+const humanDailyOverall = human.length / totalWorkdays;
+
+// Per-day counts for mean calculation (only days with actual jobs)
 const autoDayCounts = {}, humanDayCounts = {};
 auto.forEach(j => { const d = j.estSetup.slice(0,10); autoDayCounts[d] = (autoDayCounts[d]||0)+1; });
 human.forEach(j => { const d = j.estSetup.slice(0,10); humanDayCounts[d] = (humanDayCounts[d]||0)+1; });
-const autoWorkdays = Object.keys(autoDayCounts).length || 1;
-const humanWorkdays = Object.keys(humanDayCounts).length || 1;
-const autoDailyMean = auto.length / autoWorkdays;
-const humanDailyMean = human.length / humanWorkdays;
+const autoActiveDays = Object.keys(autoDayCounts).length || 1;
+const humanActiveDays = Object.keys(humanDayCounts).length || 1;
+const autoDailyMean = auto.length / autoActiveDays;
+const humanDailyMean = human.length / humanActiveDays;
 
 function setMode(mode) {
   const isMedian = mode === 'median';
@@ -231,13 +243,13 @@ function setMode(mode) {
   document.getElementById('hAutoJobs').textContent = auto.length.toLocaleString();
   document.getElementById('hHumanJobs').textContent = human.length.toLocaleString();
   if (isMedian) {
-    document.getElementById('hDailyLabel').textContent = 'Jobs / day (overall)';
-    document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyMedian.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyMedian.toFixed(1) + '</span>';
-    document.getElementById('hDailySub').textContent = 'auto / human · over ' + totalDays + ' days';
+    document.getElementById('hDailyLabel').textContent = 'Jobs / workday';
+    document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyOverall.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyOverall.toFixed(1) + '</span>';
+    document.getElementById('hDailySub').textContent = 'auto / human · ' + totalWorkdays + ' workdays';
   } else {
-    document.getElementById('hDailyLabel').textContent = 'Jobs / workday (avg)';
+    document.getElementById('hDailyLabel').textContent = 'Jobs / active day (avg)';
     document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyMean.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyMean.toFixed(1) + '</span>';
-    document.getElementById('hDailySub').textContent = 'auto (' + autoWorkdays + 'd) / human (' + humanWorkdays + 'd)';
+    document.getElementById('hDailySub').textContent = 'auto (' + autoActiveDays + 'd) / human (' + humanActiveDays + 'd)';
   }
 
   // Speed row
