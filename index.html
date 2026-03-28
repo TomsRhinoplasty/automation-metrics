@@ -255,11 +255,12 @@ function setMode(mode) {
   // Invoice row
   document.getElementById('hAutoInv').textContent = money(autoInvoiceTotal);
   document.getElementById('hHumanInv').textContent = money(humanInvoiceTotal);
-  document.getElementById('hAutoInvSub').textContent = money(auto.length ? autoInvoiceTotal / auto.length : 0) + ' avg/job';
-  document.getElementById('hHumanInvSub').textContent = money(human.length ? humanInvoiceTotal / human.length : 0) + ' avg/job';
-
   const aInvVal = isMedian ? pct(aInv, 50) : (aInv.length ? sum(aInv) / aInv.length : 0);
   const hInvVal = isMedian ? pct(hInv, 50) : (hInv.length ? sum(hInv) / hInv.length : 0);
+  const invLabel = isMedian ? 'median/job' : 'avg/job';
+  document.getElementById('hAutoInvSub').textContent = money(aInvVal) + ' ' + invLabel;
+  document.getElementById('hHumanInvSub').textContent = money(hInvVal) + ' ' + invLabel;
+
   document.getElementById('hInvPerJobLabel').textContent = label + ' invoice / job';
   document.getElementById('hInvPerJob').innerHTML = '<span class="green">' + money(aInvVal) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">' + money(hInvVal) + '</span>';
   document.getElementById('hInvPerJobSub').textContent = 'auto / human';
