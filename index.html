@@ -26,6 +26,11 @@ h1{font-size:26px;font-weight:700;margin-bottom:4px}
 .m.hero{padding:1.5rem}
 .m.hero .mv{font-size:38px}
 .green{color:#4ade80}.purple{color:#a78bfa}.amber{color:#fbbf24}
+.mg3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+@media(max-width:900px){.mg3{grid-template-columns:1fr}}
+.toggle-wrap{display:inline-flex;background:#27272a;border-radius:8px;padding:2px;gap:2px}
+.toggle-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 14px;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#71717a;transition:all .2s}
+.toggle-btn.active{background:#3f3f46;color:#e8e6e1}
 .card{background:#18181b;border:1px solid #27272a;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
 .card h3{font-size:14px;font-weight:500;color:#a1a1aa;margin-bottom:12px}
 .legend{display:flex;gap:20px;margin-bottom:10px;font-size:12px;color:#71717a;flex-wrap:wrap}
@@ -54,15 +59,27 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
 </header>
 
 <div class="section">
-  <div class="mg">
-    <div class="m hero"><div class="ml">Automation E2E (median)</div><div class="mv green" id="hAutoMed"></div><div class="ms">estimate to job complete</div></div>
-    <div class="m hero"><div class="ml">Human E2E (median)</div><div class="mv purple" id="hHumanMed"></div><div class="ms">estimate to job complete</div></div>
-    <div class="m hero"><div class="ml">Speed ratio (median)</div><div class="mv amber" id="hRatio"></div><div class="ms" id="hRatioSub"></div></div>
-    <div class="m hero"><div class="ml">All jobs</div><div class="mv" id="hAllJobs"></div><div class="ms" id="hJobsSub"></div></div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div class="toggle-wrap">
+      <button class="toggle-btn active" id="btnMedian" onclick="setMode('median')">Median</button>
+      <button class="toggle-btn" id="btnMean" onclick="setMode('mean')">Average</button>
+    </div>
+    <span style="font-size:11px;color:#52525b">Toggle all metrics</span>
+  </div>
+  <div class="mg3">
+    <div class="m hero"><div class="ml">Automation jobs</div><div class="mv green" id="hAutoJobs"></div><div class="ms">since 02/11/26</div></div>
+    <div class="m hero"><div class="ml">Human jobs</div><div class="mv purple" id="hHumanJobs"></div><div class="ms">since 02/11/26</div></div>
+    <div class="m hero"><div class="ml" id="hDailyLabel">Median jobs / day</div><div class="mv" id="hDailyRate"></div><div class="ms" id="hDailySub"></div></div>
+  </div>
+  <div class="mg3">
+    <div class="m hero"><div class="ml" id="hAutoE2ELabel">Automation E2E (median)</div><div class="mv green" id="hAutoMed"></div><div class="ms">estimate to job complete</div></div>
+    <div class="m hero"><div class="ml" id="hHumanE2ELabel">Human E2E (median)</div><div class="mv purple" id="hHumanMed"></div><div class="ms">estimate to job complete</div></div>
+    <div class="m hero"><div class="ml" id="hRatioLabel">Speed ratio (median)</div><div class="mv amber" id="hRatio"></div><div class="ms" id="hRatioSub"></div></div>
+  </div>
+  <div class="mg3">
     <div class="m hero"><div class="ml">Automation invoice total</div><div class="mv green" id="hAutoInv"></div><div class="ms" id="hAutoInvSub"></div></div>
     <div class="m hero"><div class="ml">Human invoice total</div><div class="mv purple" id="hHumanInv"></div><div class="ms" id="hHumanInvSub"></div></div>
-    <div class="m hero"><div class="ml">Combined invoice total</div><div class="mv amber" id="hTotalInv"></div><div class="ms">sum of all jobs in data.js</div></div>
-    <div class="m hero"><div class="ml">Median invoice / job</div><div class="mv" id="hMedInvoice"></div><div class="ms" id="hMedInvoiceSub"></div></div>
+    <div class="m hero"><div class="ml" id="hInvPerJobLabel">Median invoice / job</div><div class="mv" id="hInvPerJob"></div><div class="ms" id="hInvPerJobSub"></div></div>
   </div>
 </div>
 
@@ -178,7 +195,6 @@ const hInv=human.map(j=>Number(j.amountToInvoice)||0);
 const aMed=pct(aE2E,50), hMed=pct(hE2E,50);
 const aMean=aE2E.length ? sum(aE2E)/aE2E.length : 0;
 const hMean=hE2E.length ? sum(hE2E)/hE2E.length : 0;
-const ratio=(aMed>0 && hMed>0) ? Math.round(hMed/aMed) : 0;
 const autoInvoiceTotal = PACE_DATA.summary?.autoInvoiceTotal ?? sum(auto,'amountToInvoice');
 const humanInvoiceTotal = PACE_DATA.summary?.humanInvoiceTotal ?? sum(human,'amountToInvoice');
 const grandInvoiceTotal = PACE_DATA.summary?.grandInvoiceTotal ?? (autoInvoiceTotal + humanInvoiceTotal);
@@ -186,20 +202,70 @@ const grandInvoiceTotal = PACE_DATA.summary?.grandInvoiceTotal ?? (autoInvoiceTo
 // Header
 document.getElementById('updated').textContent='Data as of '+PACE_DATA.generated.slice(0,10)+' | '+auto.length+' auto + '+human.length+' human jobs | total invoiced '+money(grandInvoiceTotal);
 
-// Hero
-document.getElementById('hAutoMed').textContent=fmt(aMed);
-document.getElementById('hHumanMed').textContent=fmt(hMed);
-document.getElementById('hRatio').textContent=ratio ? ratio.toLocaleString()+'×' : '-';
-document.getElementById('hRatioSub').textContent=fmt(aMed)+' vs '+fmt(hMed);
-document.getElementById('hAllJobs').textContent=(auto.length + human.length).toLocaleString();
-document.getElementById('hJobsSub').textContent=auto.length+' automation vs '+human.length+' human';
-document.getElementById('hAutoInv').textContent=money(autoInvoiceTotal);
-document.getElementById('hHumanInv').textContent=money(humanInvoiceTotal);
-document.getElementById('hTotalInv').textContent=money(grandInvoiceTotal);
-document.getElementById('hMedInvoice').textContent=money(pct([...aInv,...hInv],50));
-document.getElementById('hMedInvoiceSub').textContent=money(pct(aInv,50))+' auto vs '+money(pct(hInv,50))+' human';
-document.getElementById('hAutoInvSub').textContent=money(auto.length ? autoInvoiceTotal/auto.length : 0)+' avg/job';
-document.getElementById('hHumanInvSub').textContent=money(human.length ? humanInvoiceTotal/human.length : 0)+' avg/job';
+// Hero — toggle-driven
+const startDate = new Date('2026-02-11');
+const now = new Date(PACE_DATA.generated);
+const totalDays = Math.max(1, Math.round((now - startDate) / 86400000));
+
+// Daily rates
+const autoDailyMedian = auto.length / totalDays;
+const humanDailyMedian = human.length / totalDays;
+
+// Per-day counts for mean calculation
+const autoDayCounts = {}, humanDayCounts = {};
+auto.forEach(j => { const d = j.estSetup.slice(0,10); autoDayCounts[d] = (autoDayCounts[d]||0)+1; });
+human.forEach(j => { const d = j.estSetup.slice(0,10); humanDayCounts[d] = (humanDayCounts[d]||0)+1; });
+const autoWorkdays = Object.keys(autoDayCounts).length || 1;
+const humanWorkdays = Object.keys(humanDayCounts).length || 1;
+const autoDailyMean = auto.length / autoWorkdays;
+const humanDailyMean = human.length / humanWorkdays;
+
+function setMode(mode) {
+  const isMedian = mode === 'median';
+  document.getElementById('btnMedian').classList.toggle('active', isMedian);
+  document.getElementById('btnMean').classList.toggle('active', !isMedian);
+
+  const label = isMedian ? 'Median' : 'Average';
+
+  // Volume row
+  document.getElementById('hAutoJobs').textContent = auto.length.toLocaleString();
+  document.getElementById('hHumanJobs').textContent = human.length.toLocaleString();
+  if (isMedian) {
+    document.getElementById('hDailyLabel').textContent = 'Jobs / day (overall)';
+    document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyMedian.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyMedian.toFixed(1) + '</span>';
+    document.getElementById('hDailySub').textContent = 'auto / human · over ' + totalDays + ' days';
+  } else {
+    document.getElementById('hDailyLabel').textContent = 'Jobs / workday (avg)';
+    document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyMean.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyMean.toFixed(1) + '</span>';
+    document.getElementById('hDailySub').textContent = 'auto (' + autoWorkdays + 'd) / human (' + humanWorkdays + 'd)';
+  }
+
+  // Speed row
+  const aVal = isMedian ? aMed : aMean;
+  const hVal = isMedian ? hMed : hMean;
+  const r = (aVal > 0 && hVal > 0) ? Math.round(hVal / aVal) : 0;
+  document.getElementById('hAutoE2ELabel').textContent = 'Automation E2E (' + label.toLowerCase() + ')';
+  document.getElementById('hHumanE2ELabel').textContent = 'Human E2E (' + label.toLowerCase() + ')';
+  document.getElementById('hRatioLabel').textContent = 'Speed ratio (' + label.toLowerCase() + ')';
+  document.getElementById('hAutoMed').textContent = fmt(aVal);
+  document.getElementById('hHumanMed').textContent = fmt(hVal);
+  document.getElementById('hRatio').textContent = r ? r.toLocaleString() + '×' : '-';
+  document.getElementById('hRatioSub').textContent = fmt(aVal) + ' vs ' + fmt(hVal);
+
+  // Invoice row
+  document.getElementById('hAutoInv').textContent = money(autoInvoiceTotal);
+  document.getElementById('hHumanInv').textContent = money(humanInvoiceTotal);
+  document.getElementById('hAutoInvSub').textContent = money(auto.length ? autoInvoiceTotal / auto.length : 0) + ' avg/job';
+  document.getElementById('hHumanInvSub').textContent = money(human.length ? humanInvoiceTotal / human.length : 0) + ' avg/job';
+
+  const aInvVal = isMedian ? pct(aInv, 50) : (aInv.length ? sum(aInv) / aInv.length : 0);
+  const hInvVal = isMedian ? pct(hInv, 50) : (hInv.length ? sum(hInv) / hInv.length : 0);
+  document.getElementById('hInvPerJobLabel').textContent = label + ' invoice / job';
+  document.getElementById('hInvPerJob').innerHTML = '<span class="green">' + money(aInvVal) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">' + money(hInvVal) + '</span>';
+  document.getElementById('hInvPerJobSub').textContent = 'auto / human';
+}
+
+setMode('median');
 
 // Pipeline
 const estToJob=pct(auto.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000),50);
