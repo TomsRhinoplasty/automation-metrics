@@ -312,31 +312,67 @@ const humanSorted = human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.es
 const autoCumData = autoSorted.map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
 const humanCumData = humanSorted.map((j,i)=>({ x: new Date(j.estSetup).getTime(), y: i+1 }));
 
+// External tooltip for cumulative chart
+function cumTooltipHandler(context) {
+  let el = document.getElementById('cumTooltip');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'cumTooltip';
+    el.style.cssText = 'position:absolute;pointer-events:none;background:#1e1e22;border:1px solid #3f3f46;border-radius:8px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:12px;color:#e8e6e1;line-height:1.7;z-index:10;transition:opacity .15s ease;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.5)';
+    document.getElementById('cumChart').parentElement.appendChild(el);
+  }
+  const tooltip = context.tooltip;
+  if (tooltip.opacity === 0) { el.style.opacity = 0; return; }
+
+  const dp = tooltip.dataPoints && tooltip.dataPoints[0];
+  if (!dp) { el.style.opacity = 0; return; }
+
+  const isAuto = dp.datasetIndex === 0;
+  const src = isAuto ? autoSorted : humanSorted;
+  const d = src[dp.dataIndex];
+  if (!d) { el.style.opacity = 0; return; }
+
+  const color = isAuto ? '#4ade80' : '#a78bfa';
+  const label = isAuto ? 'AUTO' : 'HUMAN';
+  const date = new Date(d.estSetup).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+  el.innerHTML =
+    '<div style="font-weight:600;color:' + color + ';margin-bottom:4px;font-size:13px">' + label + ' — Job #' + d.job + '</div>' +
+    '<div style="color:#a1a1aa">' + date + '</div>' +
+    '<div style="display:flex;gap:16px;margin-top:6px">' +
+      '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">E2E</span><br><span style="font-family:DM Mono,monospace;font-weight:500;color:#fbbf24">' + fmt(d.e2e) + '</span></div>' +
+      '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Invoice</span><br><span style="font-family:DM Mono,monospace;font-weight:500">' + money(d.amountToInvoice) + '</span></div>' +
+      '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Job #</span><br><span style="font-family:DM Mono,monospace;font-weight:500;color:#71717a">' + (dp.dataIndex + 1) + ' of ' + src.length + '</span></div>' +
+    '</div>';
+
+  el.style.opacity = 1;
+
+  // Position: prefer side with more space
+  const chartArea = context.chart.chartArea;
+  const midX = (chartArea.left + chartArea.right) / 2;
+  if (tooltip.caretX < midX) {
+    // Point is on left half → put tooltip on right side
+    el.style.left = (chartArea.right - el.offsetWidth - 8) + 'px';
+  } else {
+    // Point is on right half → put tooltip on left side
+    el.style.left = (chartArea.left + 8) + 'px';
+  }
+  el.style.top = (chartArea.top + 8) + 'px';
+}
+
 try {
   new Chart(document.getElementById('cumChart'),{
     type:'scatter',
     data:{datasets:[
-      {label:'Auto',data:autoCumData,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false},
-      {label:'Human',data:humanCumData,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,showLine:true,borderWidth:1.5,stepped:'after',fill:false}
+      {label:'Auto',data:autoCumData,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#4ade80',showLine:true,borderWidth:1.5,stepped:'after',fill:false},
+      {label:'Human',data:humanCumData,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#a78bfa',showLine:true,borderWidth:1.5,stepped:'after',fill:false}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,parsing:false,
+      interaction:{mode:'nearest',intersect:true},
       plugins:{
         legend:{display:false},
-        tooltip:{
-          backgroundColor:'#27272a',titleColor:'#e8e6e1',bodyColor:'#a1a1aa',displayColors:false,
-          callbacks:{
-            title:ctx=>{
-              const src=ctx[0].datasetIndex===0 ? autoSorted : humanSorted;
-              return (ctx[0].datasetIndex===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
-            },
-            label:ctx=>{
-              const src=ctx.datasetIndex===0 ? autoSorted : humanSorted;
-              const d=src[ctx.dataIndex];
-              return ['E2E: '+fmt(d.e2e),'Invoice: '+money(d.amountToInvoice),'#'+(ctx.dataIndex+1)+' cumulative'];
-            }
-          }
-        }
+        tooltip:{enabled:false,external:cumTooltipHandler}
       },
       scales:{
         x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(value)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},
@@ -349,31 +385,59 @@ try {
 // Invoice scatter chart
 const autoInvoiceScatter = autoSorted.map(j=>({x:new Date(j.estSetup).getTime(), y:Number(j.amountToInvoice)||0}));
 const humanInvoiceScatter = humanSorted.map(j=>({x:new Date(j.estSetup).getTime(), y:Number(j.amountToInvoice)||0}));
+
+function invTooltipHandler(context) {
+  let el = document.getElementById('invTooltip');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'invTooltip';
+    el.style.cssText = 'position:absolute;pointer-events:none;background:#1e1e22;border:1px solid #3f3f46;border-radius:8px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:12px;color:#e8e6e1;line-height:1.7;z-index:10;transition:opacity .15s ease;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.5)';
+    document.getElementById('invoiceScatterChart').parentElement.appendChild(el);
+  }
+  const tooltip = context.tooltip;
+  if (tooltip.opacity === 0) { el.style.opacity = 0; return; }
+  const dp = tooltip.dataPoints && tooltip.dataPoints[0];
+  if (!dp) { el.style.opacity = 0; return; }
+  const isAuto = dp.datasetIndex === 0;
+  const src = isAuto ? autoSorted : humanSorted;
+  const d = src[dp.dataIndex];
+  if (!d) { el.style.opacity = 0; return; }
+  const color = isAuto ? '#4ade80' : '#a78bfa';
+  const label = isAuto ? 'AUTO' : 'HUMAN';
+  const date = new Date(d.estSetup).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+  el.innerHTML =
+    '<div style="font-weight:600;color:' + color + ';margin-bottom:4px;font-size:13px">' + label + ' — Job #' + d.job + '</div>' +
+    '<div style="color:#a1a1aa">' + date + '</div>' +
+    '<div style="display:flex;gap:16px;margin-top:6px">' +
+      '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Invoice</span><br><span style="font-family:DM Mono,monospace;font-weight:500">' + money(d.amountToInvoice) + '</span></div>' +
+      '<div><span style="color:#71717a;font-size:10px;text-transform:uppercase;letter-spacing:.5px">E2E</span><br><span style="font-family:DM Mono,monospace;font-weight:500;color:#fbbf24">' + fmt(d.e2e) + '</span></div>' +
+    '</div>';
+
+  el.style.opacity = 1;
+  const chartArea = context.chart.chartArea;
+  const midX = (chartArea.left + chartArea.right) / 2;
+  if (tooltip.caretX < midX) {
+    el.style.left = (chartArea.right - el.offsetWidth - 8) + 'px';
+  } else {
+    el.style.left = (chartArea.left + 8) + 'px';
+  }
+  el.style.top = (chartArea.top + 8) + 'px';
+}
+
 try {
   new Chart(document.getElementById('invoiceScatterChart'),{
     type:'scatter',
     data:{datasets:[
-      {label:'Automation',data:autoInvoiceScatter,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.75)',pointRadius:4},
-      {label:'Human',data:humanInvoiceScatter,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.75)',pointRadius:4}
+      {label:'Automation',data:autoInvoiceScatter,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.75)',pointRadius:4,pointHoverRadius:7,pointHoverBackgroundColor:'#4ade80'},
+      {label:'Human',data:humanInvoiceScatter,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.75)',pointRadius:4,pointHoverRadius:7,pointHoverBackgroundColor:'#a78bfa'}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,parsing:false,
+      interaction:{mode:'nearest',intersect:true},
       plugins:{
         legend:{display:false},
-        tooltip:{
-          backgroundColor:'#27272a',titleColor:'#e8e6e1',bodyColor:'#a1a1aa',
-          callbacks:{
-            title:ctx=>{
-              const src=ctx[0].datasetIndex===0 ? autoSorted : humanSorted;
-              return (ctx[0].datasetIndex===0?'AUTO':'HUMAN')+' — Job #'+src[ctx[0].dataIndex].job;
-            },
-            label:ctx=>{
-              const src=ctx.datasetIndex===0 ? autoSorted : humanSorted;
-              const d=src[ctx.dataIndex];
-              return ['Invoice: '+money(d.amountToInvoice),'E2E: '+fmt(d.e2e)];
-            }
-          }
-        }
+        tooltip:{enabled:false,external:invTooltipHandler}
       },
       scales:{
         x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:(value)=>new Date(value).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},
