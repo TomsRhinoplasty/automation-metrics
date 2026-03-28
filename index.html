@@ -84,6 +84,33 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
 </div>
 
 <div class="section">
+  <h2>Labor efficiency & ROI</h2>
+  <p style="font-size:13px;color:#52525b;margin-bottom:16px">Total human interaction time per job across both pipelines — all users, not just the entry operator. Timestamps are a floor estimate (reading/thinking time isn't captured).</p>
+  <div class="mg3">
+    <div class="m hero"><div class="ml" id="hAutoHTLabel">Auto: human time / job (median)</div><div class="mv green" id="hAutoHT"></div><div class="ms" id="hAutoHTSub"></div></div>
+    <div class="m hero"><div class="ml" id="hHumanHTLabel">Human: human time / job (median)</div><div class="mv purple" id="hHumanHT"></div><div class="ms" id="hHumanHTSub"></div></div>
+    <div class="m hero"><div class="ml" id="hHTSavedLabel">Time saved / job (median)</div><div class="mv amber" id="hHTSaved"></div><div class="ms" id="hHTSavedSub"></div></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>ROI Calculator</h3>
+    <p style="font-size:12px;color:#52525b;margin-bottom:16px">Adjust the blended hourly rate for human roles involved in each job (estimators, data entry, billing, admin). The calculator uses the per-job human time delta between pipelines.</p>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;color:#71717a;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Blended hourly rate</label>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:#52525b;font-size:16px">$</span>
+          <input type="number" id="roiRate" value="22" min="10" max="100" step="1" style="width:70px;background:#0c0c0e;border:1px solid #3f3f46;border-radius:6px;padding:6px 10px;color:#e8e6e1;font-family:'DM Mono',monospace;font-size:14px">
+          <span style="color:#52525b;font-size:12px">/ hr</span>
+          <input type="range" id="roiSlider" min="10" max="100" step="1" value="22" style="width:160px;accent-color:#4ade80">
+        </div>
+      </div>
+    </div>
+    <div class="mg3" id="roiMetrics"></div>
+    <p class="note" id="roiNote"></p>
+  </div>
+</div>
+
+<div class="section">
   <div class="card">
     <h3>Cumulative jobs — every entry at its exact timestamp</h3>
     <div class="legend">
@@ -192,6 +219,8 @@ const aE2E=auto.map(j=>j.e2e).filter(v=>Number.isFinite(v));
 const hE2E=human.map(j=>j.e2e).filter(v=>Number.isFinite(v));
 const aInv=auto.map(j=>Number(j.amountToInvoice)||0);
 const hInv=human.map(j=>Number(j.amountToInvoice)||0);
+const aHT=auto.map(j=>Number(j.humanTime)||0);
+const hHT=human.map(j=>Number(j.humanTime)||0);
 const aMed=pct(aE2E,50), hMed=pct(hE2E,50);
 const aMean=aE2E.length ? sum(aE2E)/aE2E.length : 0;
 const hMean=hE2E.length ? sum(hE2E)/hE2E.length : 0;
@@ -276,7 +305,54 @@ function setMode(mode) {
   document.getElementById('hInvPerJobLabel').textContent = label + ' invoice / job';
   document.getElementById('hInvPerJob').innerHTML = '<span class="green">' + money(aInvVal) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">' + money(hInvVal) + '</span>';
   document.getElementById('hInvPerJobSub').textContent = 'auto / human';
+
+  // Human time row
+  const aHTVal = isMedian ? pct(aHT, 50) : (aHT.length ? sum(aHT) / aHT.length : 0);
+  const hHTVal = isMedian ? pct(hHT, 50) : (hHT.length ? sum(hHT) / hHT.length : 0);
+  const htDelta = hHTVal - aHTVal;
+  const htRatio = aHTVal > 0 ? (hHTVal / aHTVal) : 0;
+  document.getElementById('hAutoHTLabel').textContent = 'Auto: human time / job (' + label.toLowerCase() + ')';
+  document.getElementById('hHumanHTLabel').textContent = 'Human: human time / job (' + label.toLowerCase() + ')';
+  document.getElementById('hHTSavedLabel').textContent = 'Time saved / job (' + label.toLowerCase() + ')';
+  document.getElementById('hAutoHT').textContent = fmt(aHTVal);
+  document.getElementById('hHumanHT').textContent = fmt(hHTVal);
+  document.getElementById('hHTSaved').textContent = fmt(htDelta);
+  document.getElementById('hAutoHTSub').textContent = 'all human interaction';
+  document.getElementById('hHumanHTSub').textContent = 'all human interaction';
+  document.getElementById('hHTSavedSub').textContent = htRatio > 0 ? htRatio.toFixed(1) + '× reduction' : '-';
+
+  // Update ROI
+  updateROI(htDelta);
 }
+
+let currentHTDelta = 0;
+function updateROI(htDelta) {
+  if (htDelta !== undefined) currentHTDelta = htDelta;
+  const rate = Number(document.getElementById('roiRate').value) || 22;
+  const totalSavedSec = currentHTDelta * auto.length;
+  const totalSavedHrs = totalSavedSec / 3600;
+  const annualScale = 260 / totalWorkdays;
+  const annualHrs = totalSavedHrs * annualScale;
+  const annualValue = annualHrs * rate;
+  const fte = annualHrs / 2080;
+
+  document.getElementById('roiMetrics').innerHTML = [
+    {l:'Hours saved to date', v: Math.round(totalSavedHrs).toLocaleString() + ' hrs', c:'green', s: auto.length + ' jobs × ' + fmt(currentHTDelta) + ' saved each'},
+    {l:'Annualized hours saved', v: Math.round(annualHrs).toLocaleString() + ' hrs', c:'amber', s: (fte).toFixed(2) + ' FTE equivalent (2,080 hrs/yr)'},
+    {l:'Annualized labor value', v: money(annualValue), c:'green', s: 'at $' + rate + '/hr blended rate'},
+  ].map(m => '<div class="m"><div class="ml">' + m.l + '</div><div class="mv ' + m.c + '">' + m.v + '</div><div class="ms">' + m.s + '</div></div>').join('');
+
+  document.getElementById('roiNote').textContent = 'Human time is measured from audit log timestamps using 30-minute session gaps. This is a floor estimate — it does not capture reading, thinking, or context-switching time. Actual human effort per job is likely higher, making these savings conservative.';
+}
+
+document.getElementById('roiRate').addEventListener('input', e => {
+  document.getElementById('roiSlider').value = e.target.value;
+  updateROI();
+});
+document.getElementById('roiSlider').addEventListener('input', e => {
+  document.getElementById('roiRate').value = e.target.value;
+  updateROI();
+});
 
 setMode('median');
 
