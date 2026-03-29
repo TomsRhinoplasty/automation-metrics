@@ -340,7 +340,7 @@ function updateROI(htDelta) {
 
   document.getElementById('roiMetrics').innerHTML = [
     {l:'Hours saved to date', v: Math.round(totalSavedHrs).toLocaleString() + ' hrs', c:'green', s: auto.length + ' jobs × ' + fmt(currentHTDelta) + ' saved each'},
-    {l:'Annualized hours saved', v: Math.round(annualHrs).toLocaleString() + ' hrs', c:'amber', s: (fte).toFixed(2) + ' FTE equivalent (2,080 hrs/yr)'},
+    {l:'Annualized hours saved', v: Math.round(annualHrs).toLocaleString() + ' hrs', c:'amber', s: (fte).toFixed(2) + ' full-time equivalent (2,080 hrs/yr)'},
     {l:'Annualized labor value', v: money(annualValue), c:'green', s: 'at $' + rate + '/hr blended rate'},
   ].map(m => '<div class="m"><div class="ml">' + m.l + '</div><div class="mv ' + m.c + '">' + m.v + '</div><div class="ms">' + m.s + '</div></div>').join('');
 
@@ -365,7 +365,7 @@ document.getElementById('pfAutoDone').textContent='+'+fmt(aMed);
 const hEstToJob=pct(human.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000),50);
 document.getElementById('pfHumanWait').textContent='+'+fmt(hEstToJob);
 document.getElementById('pfHumanDone').textContent='+'+fmt(hMed);
-document.getElementById('pipelineSubtitle').textContent='The automation collapses work previously split across two roles (estimator + data entry) into a single continuous process, while invoice totals remain attached to each completed job.';
+document.getElementById('pipelineSubtitle').textContent='The automation replaces the manual estimate-to-job conversion, eliminating the overnight handoff and reducing total human involvement from ' + fmt(pct(hHT, 50)) + ' to ' + fmt(pct(aHT, 50)) + ' per job (median).';
 
 // Speed metrics
 document.getElementById('speedMetrics').innerHTML=[
