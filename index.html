@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -201,6 +202,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
 </div>
 
 <script src="data.js"></script>
+
 <script>
 function pct(arr,p){
   if(!arr.length) return 0;
@@ -342,7 +344,7 @@ function updateROI(htDelta) {
     {l:'Annualized labor value', v: money(annualValue), c:'green', s: 'at $' + rate + '/hr blended rate'},
   ].map(m => '<div class="m"><div class="ml">' + m.l + '</div><div class="mv ' + m.c + '">' + m.v + '</div><div class="ms">' + m.s + '</div></div>').join('');
 
-  document.getElementById('roiNote').textContent = 'Human time is measured from audit log timestamps using 30-minute session gaps. This is a floor estimate — it does not capture reading, thinking, or context-switching time. Actual human effort per job is likely higher, making these savings conservative.';
+  document.getElementById('roiNote').textContent = 'Human time per job is calculated from system audit logs — each time a person makes a change, a timestamp is recorded. If no activity is logged for more than 30 minutes, that gap is treated as time away from the job rather than active work. This means these numbers only count time where people were actively making changes, not time spent reading, reviewing, or thinking. Actual human effort is likely higher, making these savings a conservative estimate.';
 }
 
 document.getElementById('roiRate').addEventListener('input', e => {
@@ -582,5 +584,6 @@ try {
 // Footer
 document.getElementById('footNote').textContent='Data source: PACE job + estimate history. Estimate Entry DateTime to last job entry action by entering user, with one Amount To Invoice value preserved per job and summed across the dashboard. Generated '+PACE_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs (EZEP/payapi), '+human.length+' human jobs (YATC).';
 </script>
+
 </body>
 </html>
