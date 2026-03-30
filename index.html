@@ -397,8 +397,6 @@ function pctRow(label, arrA, arrH){
   document.getElementById('outcomeTable').innerHTML = html;
 })();
 
-const autoSorted = auto.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
-const humanSorted = human.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
 new Chart(document.getElementById('cumChart'),{
   type:'scatter',
   data:{datasets:[
