@@ -177,8 +177,19 @@ function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
 function sum(arr,key){return arr.reduce((a,b)=>a+(Number(key?b[key]:b)||0),0)}
 function fmtSec(s){if(s==null||isNaN(s))return'-';s=Math.abs(s);if(s<60)return Math.round(s)+'s';if(s<3600)return(s/60).toFixed(1)+' min';return(s/3600).toFixed(1)+' hrs'}
 function money(v){return '$'+Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-function dateFmt(iso){const d=new Date(iso);return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
-function weekKey(iso){const d=new Date(iso),day=d.getDay(),m=new Date(d);m.setDate(d.getDate()-((day+6)%7));return m.toISOString().slice(0,10)}
+function parseLocalTS(value){
+  if(!value) return null;
+  const m = String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if(m){
+    const [,y,mo,d,h,mi,s] = m;
+    const dt = new Date(Number(y), Number(mo)-1, Number(d), Number(h), Number(mi), Number(s||0), 0);
+    return isNaN(dt) ? null : dt;
+  }
+  const fallback = new Date(value);
+  return isNaN(fallback) ? null : fallback;
+}
+function dateFmt(iso){const d=parseLocalTS(iso);return d?d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}):'-'}
+function weekKey(iso){const d=parseLocalTS(iso),day=d.getDay(),m=new Date(d);m.setDate(d.getDate()-((day+6)%7));return m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0')+'-'+String(m.getDate()).padStart(2,'0')}
 function workdaysBetween(start,end){let c=0;const d=new Date(start);while(d<=end){const dow=d.getDay();if(dow!==0&&dow!==6)c++;d.setDate(d.getDate()+1)}return Math.max(1,c)}
 function ratio(a,b){return a>0&&b>0?b/a:0}
 function pctStr(n){return Math.round(n*100)+'%'}
@@ -186,7 +197,7 @@ function pctStr(n){return Math.round(n*100)+'%'}
 const DATA = typeof DASHBOARD_DATA !== 'undefined' ? DASHBOARD_DATA : (typeof PACE_DATA !== 'undefined' ? PACE_DATA : null);
 if (!DATA) throw new Error('data.js not loaded');
 const auto = DATA.auto || [], human = DATA.human || [];
-const generated = new Date(DATA.generated || Date.now());
+const generated = parseLocalTS(DATA.generated) || new Date(DATA.generated || Date.now());
 const start = new Date(Math.min(...auto.concat(human).map(j=>parseLocalTS(j.estSetup).getTime())));
 const totalWorkdays = workdaysBetween(start, generated);
 const assumptions = DATA.assumptions || {};
