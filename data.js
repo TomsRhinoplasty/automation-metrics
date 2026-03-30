@@ -2,7 +2,7 @@
 // Automation: 434 jobs ($51,339.41) | Manual: 195 jobs ($175,119.95)
 // E2E: auto 51s vs manual 23.6 hrs (1,667× faster)
 const DASHBOARD_DATA = {
-  "generated": "2026-03-30T12:16:35.973Z",
+  "generated": "2026-03-30T12:26:06.690Z",
   "summary": {
     "autoJobs": 434,
     "humanJobs": 195,
