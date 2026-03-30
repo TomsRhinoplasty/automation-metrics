@@ -82,32 +82,32 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   </div>
   <div class="mg3">
     <div class="m hero"><div class="ml">Automation jobs</div><div class="mv green" id="hAutoJobs"></div><div class="ms">since 02/11/26</div></div>
-    <div class="m hero"><div class="ml">Human jobs</div><div class="mv purple" id="hHumanJobs"></div><div class="ms">since 02/11/26</div></div>
+    <div class="m hero"><div class="ml">Manual jobs</div><div class="mv purple" id="hHumanJobs"></div><div class="ms">since 02/11/26</div></div>
     <div class="m hero"><div class="ml" id="hDailyLabel">Median jobs / day</div><div class="mv" id="hDailyRate"></div><div class="ms" id="hDailySub"></div></div>
   </div>
   <div class="mg3">
     <div class="m hero"><div class="ml" id="hAutoE2ELabel">Automation E2E (median)</div><div class="mv green" id="hAutoMed"></div><div class="ms">estimate to job complete</div></div>
-    <div class="m hero"><div class="ml" id="hHumanE2ELabel">Human E2E (median)</div><div class="mv purple" id="hHumanMed"></div><div class="ms">estimate to job complete</div></div>
+    <div class="m hero"><div class="ml" id="hHumanE2ELabel">Manual E2E (median)</div><div class="mv purple" id="hHumanMed"></div><div class="ms">estimate to job complete</div></div>
     <div class="m hero"><div class="ml" id="hRatioLabel">Speed ratio (median)</div><div class="mv amber" id="hRatio"></div><div class="ms" id="hRatioSub"></div></div>
   </div>
   <div class="mg3">
     <div class="m hero"><div class="ml">Automation invoice total</div><div class="mv green" id="hAutoInv"></div><div class="ms" id="hAutoInvSub"></div></div>
-    <div class="m hero"><div class="ml">Human invoice total</div><div class="mv purple" id="hHumanInv"></div><div class="ms" id="hHumanInvSub"></div></div>
+    <div class="m hero"><div class="ml">Manual invoice total</div><div class="mv purple" id="hHumanInv"></div><div class="ms" id="hHumanInvSub"></div></div>
     <div class="m hero"><div class="ml" id="hInvPerJobLabel">Median invoice / job</div><div class="mv" id="hInvPerJob"></div><div class="ms" id="hInvPerJobSub"></div></div>
   </div>
 </div>
 
 <div class="section">
-  <h2>Labor efficiency & ROI</h2>
-  <p style="font-size:13px;color:#52525b;margin-bottom:16px">Total human interaction time per job across both pipelines — all users, not just the entry operator. Timestamps are a floor estimate (reading/thinking time isn't captured).</p>
+  <h2>Pipeline time & ROI</h2>
+  <p style="font-size:13px;color:#52525b;margin-bottom:16px">End-to-end pipeline time per job — from estimate creation to last recorded action. Every timestamp comes directly from the ERP system's audit log.</p>
   <div class="mg3">
-    <div class="m hero"><div class="ml" id="hAutoHTLabel">Auto: human time / job (median)</div><div class="mv green" id="hAutoHT"></div><div class="ms" id="hAutoHTSub"></div></div>
-    <div class="m hero"><div class="ml" id="hHumanHTLabel">Human: human time / job (median)</div><div class="mv purple" id="hHumanHT"></div><div class="ms" id="hHumanHTSub"></div></div>
-    <div class="m hero"><div class="ml" id="hHTSavedLabel">Time saved / job (median)</div><div class="mv amber" id="hHTSaved"></div><div class="ms" id="hHTSavedSub"></div></div>
+    <div class="m hero"><div class="ml" id="hAutoHTLabel">Automation E2E (median)</div><div class="mv green" id="hAutoHT"></div><div class="ms" id="hAutoHTSub">estimate to job complete</div></div>
+    <div class="m hero"><div class="ml" id="hHumanHTLabel">Manual E2E (median)</div><div class="mv purple" id="hHumanHT"></div><div class="ms" id="hHumanHTSub">estimate to job complete</div></div>
+    <div class="m hero"><div class="ml" id="hHTSavedLabel">Pipeline time saved / job (median)</div><div class="mv amber" id="hHTSaved"></div><div class="ms" id="hHTSavedSub"></div></div>
   </div>
   <div class="card" style="margin-top:12px">
     <h3>ROI Calculator</h3>
-    <p style="font-size:12px;color:#52525b;margin-bottom:16px">Adjust the blended hourly rate for human roles involved in each job (estimators, data entry, billing, admin). The calculator uses the per-job human time delta between pipelines.</p>
+    <p style="font-size:12px;color:#52525b;margin-bottom:16px">Adjust the blended hourly rate for staff involved in the pipeline. The calculator uses the E2E time difference — how much longer each job would occupy the pipeline without automation.</p>
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px">
       <div>
         <label style="font-size:11px;color:#71717a;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Blended hourly rate</label>
@@ -128,8 +128,8 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   <div class="card">
     <h3>Cumulative jobs — every entry at its exact timestamp</h3>
     <div class="legend">
-      <span><span class="dot" style="background:#4ade80"></span>Automation (EZEP)</span>
-      <span><span class="dot" style="background:#a78bfa"></span>Human (YATC)</span>
+      <span><span class="dot" style="background:#4ade80"></span>Automation</span>
+      <span><span class="dot" style="background:#a78bfa"></span>Manual</span>
     </div>
     <div style="position:relative;height:380px"><canvas id="cumChart"></canvas></div>
   </div>
@@ -160,7 +160,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
     <span id="raceDoneAuto" style="font-size:18px;opacity:0;transition:opacity .3s">✓</span>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span style="font-size:11px;color:#a78bfa;font-weight:600;width:90px;text-transform:uppercase;letter-spacing:.5px">Human</span>
+    <span style="font-size:11px;color:#a78bfa;font-weight:600;width:90px;text-transform:uppercase;letter-spacing:.5px">Manual</span>
     <div style="flex:1;position:relative;height:32px;background:#111;border-radius:6px;overflow:hidden">
       <div id="raceBarHuman" style="position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,#5b21b6,#a78bfa);border-radius:6px;transition:none;display:flex;align-items:center;justify-content:flex-end;padding-right:8px">
         <span id="raceTimeHuman" style="font-family:'DM Mono',monospace;font-size:10px;color:#fff;opacity:0;white-space:nowrap"></span>
@@ -210,7 +210,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
           </div>
         </div>
         <div class="pipeline-footer">
-          <div class="pf-stat"><span class="pf-stat-label">Human time</span><span class="pf-stat-value green" id="pfAutoHT"></span></div>
+          <div class="pf-stat"><span class="pf-stat-label">E2E time</span><span class="pf-stat-value green" id="pfAutoHT"></span></div>
           <div class="pf-stat"><span class="pf-stat-label">People involved</span><span class="pf-stat-value">1 + automation</span></div>
           <div class="pf-stat"><span class="pf-stat-label">Handoffs</span><span class="pf-stat-value">0</span></div>
         </div>
@@ -218,7 +218,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
       <div class="pipeline-vs">VS</div>
       <div class="pipeline-side pipeline-human">
         <div class="pipeline-header" style="background:#5b21b6;color:#ddd6fe">
-          <span class="pipeline-tag">HUMAN</span>
+          <span class="pipeline-tag">MANUAL</span>
           <span class="pipeline-e2e" id="pfHumanE2E"></span>
         </div>
         <div class="pipeline-steps">
@@ -247,7 +247,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
           </div>
         </div>
         <div class="pipeline-footer">
-          <div class="pf-stat"><span class="pf-stat-label">Human time</span><span class="pf-stat-value purple" id="pfHumanHT"></span></div>
+          <div class="pf-stat"><span class="pf-stat-label">E2E time</span><span class="pf-stat-value purple" id="pfHumanHT"></span></div>
           <div class="pf-stat"><span class="pf-stat-label">People involved</span><span class="pf-stat-value" id="pfHumanPeople"></span></div>
           <div class="pf-stat"><span class="pf-stat-label">Handoffs</span><span class="pf-stat-value">1+</span></div>
         </div>
@@ -277,7 +277,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
       <h3>Individual invoice amounts over time</h3>
       <div class="legend">
         <span><span class="dot" style="background:#4ade80"></span>Automation jobs</span>
-        <span><span class="dot" style="background:#a78bfa"></span>Human jobs</span>
+        <span><span class="dot" style="background:#a78bfa"></span>Manual jobs</span>
       </div>
       <div style="position:relative;height:320px"><canvas id="invoiceScatterChart"></canvas></div>
     </div>
@@ -285,7 +285,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
       <h3>Invoice totals by week</h3>
       <div class="legend">
         <span><span class="dot" style="background:#4ade80"></span>Automation</span>
-        <span><span class="dot" style="background:#a78bfa"></span>Human</span>
+        <span><span class="dot" style="background:#a78bfa"></span>Manual</span>
       </div>
       <div style="position:relative;height:320px"><canvas id="invoiceWeeklyChart"></canvas></div>
     </div>
@@ -297,7 +297,7 @@ td{padding:5px 8px;border-bottom:1px solid #1f1f23;color:#d4d4d8;font-family:'DM
   <div class="card">
     <div class="legend">
       <span><span class="dot" style="background:#4ade80"></span>Automation</span>
-      <span><span class="dot" style="background:#a78bfa"></span>Human</span>
+      <span><span class="dot" style="background:#a78bfa"></span>Manual</span>
     </div>
     <div style="position:relative;height:280px"><canvas id="weeklyChart"></canvas></div>
   </div>
@@ -320,27 +320,25 @@ function money(v){return '$'+Number(v||0).toLocaleString(undefined,{minimumFract
 function weekKey(iso){const d=new Date(iso),day=d.getDay(),m=new Date(d);m.setDate(d.getDate()-((day+6)%7));return m.toISOString().slice(0,10)}
 function sum(arr, key){return arr.reduce((a,b)=>a + (Number(key ? b[key] : b) || 0),0)}
 
-const auto=PACE_DATA.auto || [];
-const human=PACE_DATA.human || [];
+const auto=DASHBOARD_DATA.auto || [];
+const human=DASHBOARD_DATA.human || [];
 const aE2E=auto.map(j=>j.e2e).filter(v=>Number.isFinite(v));
 const hE2E=human.map(j=>j.e2e).filter(v=>Number.isFinite(v));
 const aInv=auto.map(j=>Number(j.amountToInvoice)||0);
 const hInv=human.map(j=>Number(j.amountToInvoice)||0);
-const aHT=auto.map(j=>Number(j.humanTime)||0);
-const hHT=human.map(j=>Number(j.humanTime)||0);
 const aMed=pct(aE2E,50), hMed=pct(hE2E,50);
 const aMean=aE2E.length ? sum(aE2E)/aE2E.length : 0;
 const hMean=hE2E.length ? sum(hE2E)/hE2E.length : 0;
-const autoInvoiceTotal = PACE_DATA.summary?.autoInvoiceTotal ?? sum(auto,'amountToInvoice');
-const humanInvoiceTotal = PACE_DATA.summary?.humanInvoiceTotal ?? sum(human,'amountToInvoice');
-const grandInvoiceTotal = PACE_DATA.summary?.grandInvoiceTotal ?? (autoInvoiceTotal + humanInvoiceTotal);
+const autoInvoiceTotal = DASHBOARD_DATA.summary?.autoInvoiceTotal ?? sum(auto,'amountToInvoice');
+const humanInvoiceTotal = DASHBOARD_DATA.summary?.humanInvoiceTotal ?? sum(human,'amountToInvoice');
+const grandInvoiceTotal = DASHBOARD_DATA.summary?.grandInvoiceTotal ?? (autoInvoiceTotal + humanInvoiceTotal);
 
 // Header
-document.getElementById('updated').textContent='Data as of '+PACE_DATA.generated.slice(0,10)+' | '+auto.length+' auto + '+human.length+' human jobs | total invoiced '+money(grandInvoiceTotal);
+document.getElementById('updated').textContent='Data as of '+DASHBOARD_DATA.generated.slice(0,10)+' | '+auto.length+' automation + '+human.length+' manual jobs | total invoiced '+money(grandInvoiceTotal);
 
 // Hero — toggle-driven
 const startDate = new Date('2026-02-11');
-const now = new Date(PACE_DATA.generated);
+const now = new Date(DASHBOARD_DATA.generated);
 
 // Count Mon–Fri workdays in the date range
 function countWorkdays(start, end) {
@@ -381,7 +379,7 @@ function setMode(mode) {
   if (isMedian) {
     document.getElementById('hDailyLabel').textContent = 'Jobs / workday';
     document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyOverall.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyOverall.toFixed(1) + '</span>';
-    document.getElementById('hDailySub').textContent = 'auto / human · ' + totalWorkdays + ' workdays';
+    document.getElementById('hDailySub').textContent = 'auto / manual · ' + totalWorkdays + ' workdays';
   } else {
     document.getElementById('hDailyLabel').textContent = 'Jobs / active day (avg)';
     document.getElementById('hDailyRate').innerHTML = '<span class="green">~' + autoDailyMean.toFixed(1) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">~' + humanDailyMean.toFixed(1) + '</span>';
@@ -393,7 +391,7 @@ function setMode(mode) {
   const hVal = isMedian ? hMed : hMean;
   const r = (aVal > 0 && hVal > 0) ? Math.round(hVal / aVal) : 0;
   document.getElementById('hAutoE2ELabel').textContent = 'Automation E2E (' + label.toLowerCase() + ')';
-  document.getElementById('hHumanE2ELabel').textContent = 'Human E2E (' + label.toLowerCase() + ')';
+  document.getElementById('hHumanE2ELabel').textContent = 'Manual E2E (' + label.toLowerCase() + ')';
   document.getElementById('hRatioLabel').textContent = 'Speed ratio (' + label.toLowerCase() + ')';
   document.getElementById('hAutoMed').textContent = fmt(aVal);
   document.getElementById('hHumanMed').textContent = fmt(hVal);
@@ -411,25 +409,25 @@ function setMode(mode) {
 
   document.getElementById('hInvPerJobLabel').textContent = label + ' invoice / job';
   document.getElementById('hInvPerJob').innerHTML = '<span class="green">' + money(aInvVal) + '</span> <span style="color:#52525b;font-size:20px">/</span> <span class="purple">' + money(hInvVal) + '</span>';
-  document.getElementById('hInvPerJobSub').textContent = 'auto / human';
+  document.getElementById('hInvPerJobSub').textContent = 'auto / manual';
 
-  // Human time row
-  const aHTVal = isMedian ? pct(aHT, 50) : (aHT.length ? sum(aHT) / aHT.length : 0);
-  const hHTVal = isMedian ? pct(hHT, 50) : (hHT.length ? sum(hHT) / hHT.length : 0);
-  const htDelta = hHTVal - aHTVal;
-  const htRatio = aHTVal > 0 ? (hHTVal / aHTVal) : 0;
-  document.getElementById('hAutoHTLabel').textContent = 'Auto: human time / job (' + label.toLowerCase() + ')';
-  document.getElementById('hHumanHTLabel').textContent = 'Human: human time / job (' + label.toLowerCase() + ')';
-  document.getElementById('hHTSavedLabel').textContent = 'Time saved / job (' + label.toLowerCase() + ')';
-  document.getElementById('hAutoHT').textContent = fmt(aHTVal);
-  document.getElementById('hHumanHT').textContent = fmt(hHTVal);
-  document.getElementById('hHTSaved').textContent = fmt(htDelta);
-  document.getElementById('hAutoHTSub').textContent = 'all human interaction';
-  document.getElementById('hHumanHTSub').textContent = 'all human interaction';
-  document.getElementById('hHTSavedSub').textContent = htRatio > 0 ? htRatio.toFixed(1) + '× reduction' : '-';
+  // Pipeline time row (E2E based)
+  const aE2EVal = isMedian ? aMed : aMean;
+  const hE2EVal = isMedian ? hMed : hMean;
+  const e2eDelta = hE2EVal - aE2EVal;
+  const e2eRatio = aE2EVal > 0 ? (hE2EVal / aE2EVal) : 0;
+  document.getElementById('hAutoHTLabel').textContent = 'Automation E2E (' + label.toLowerCase() + ')';
+  document.getElementById('hHumanHTLabel').textContent = 'Manual E2E (' + label.toLowerCase() + ')';
+  document.getElementById('hHTSavedLabel').textContent = 'Pipeline time saved / job (' + label.toLowerCase() + ')';
+  document.getElementById('hAutoHT').textContent = fmt(aE2EVal);
+  document.getElementById('hHumanHT').textContent = fmt(hE2EVal);
+  document.getElementById('hHTSaved').textContent = fmt(e2eDelta);
+  document.getElementById('hAutoHTSub').textContent = 'estimate to job complete';
+  document.getElementById('hHumanHTSub').textContent = 'estimate to job complete';
+  document.getElementById('hHTSavedSub').textContent = e2eRatio > 0 ? Math.round(e2eRatio).toLocaleString() + '× faster' : '-';
 
   // Update ROI
-  updateROI(htDelta);
+  updateROI(e2eDelta);
 }
 
 let currentHTDelta = 0;
@@ -449,7 +447,7 @@ function updateROI(htDelta) {
     {l:'Annualized labor value', v: money(annualValue), c:'green', s: 'at $' + rate + '/hr blended rate'},
   ].map(m => '<div class="m"><div class="ml">' + m.l + '</div><div class="mv ' + m.c + '">' + m.v + '</div><div class="ms">' + m.s + '</div></div>').join('');
 
-  document.getElementById('roiNote').textContent = 'Human time per job is calculated from system audit logs — each time a person makes a change, a timestamp is recorded. If no activity is logged for more than 30 minutes, that gap is treated as time away from the job rather than active work. This means these numbers only count time where people were actively making changes, not time spent reading, reviewing, or thinking. Actual human effort is likely higher, making these savings a conservative estimate.';
+  document.getElementById('roiNote').textContent = 'Pipeline time is measured from the first recorded action (estimate creation) to the last recorded action for each job, using timestamps directly from the ERP system audit log. No estimation or interpolation is applied — these are raw start-to-finish times.';
 }
 
 document.getElementById('roiRate').addEventListener('input', e => {
@@ -468,19 +466,16 @@ const estToJob=pct(auto.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000)
 document.getElementById('pfAutoCalc').textContent='+' + Math.round(estToJob/2) + 's';
 document.getElementById('pfAutoDone').textContent='+' + fmt(aMed);
 document.getElementById('pfAutoE2E').textContent=fmt(aMed);
-document.getElementById('pfAutoHT').textContent=fmt(pct(aHT, 50));
+document.getElementById('pfAutoHT').textContent=fmt(aMed);
 const hEstToJob=pct(human.map(j=>(new Date(j.jobSetup)-new Date(j.estSetup))/1000),50);
 document.getElementById('pfHumanWait').textContent='+' + fmt(hEstToJob);
 document.getElementById('pfHumanDone').textContent='+' + fmt(hMed);
 document.getElementById('pfHumanE2E').textContent=fmt(hMed);
-document.getElementById('pfHumanHT').textContent=fmt(pct(hHT, 50));
+document.getElementById('pfHumanHT').textContent=fmt(hMed);
 
-// Count unique human usernames on YATC jobs (from data)
-const humanUsers = new Set();
-human.forEach(j => { if (j.nActions) humanUsers.add('x'); }); // approximate
 document.getElementById('pfHumanPeople').textContent = '6–8 median';
 
-document.getElementById('pipelineSubtitle').textContent='The automation replaces the manual estimate-to-job conversion, eliminating the overnight handoff and reducing total human involvement from ' + fmt(pct(hHT, 50)) + ' to ' + fmt(pct(aHT, 50)) + ' per job (median).';
+document.getElementById('pipelineSubtitle').textContent='The automation replaces the manual estimate-to-job conversion, eliminating the overnight handoff and reducing end-to-end pipeline time from ' + fmt(hMed) + ' to ' + fmt(aMed) + ' per job (median).';
 
 // What-if callout
 const autoJobsPerDay = auto.length / totalWorkdays;
@@ -490,9 +485,9 @@ const rate0 = Number(document.getElementById('roiRate').value) || 22;
 const additionalCost = additionalStaffNeeded * rate0 * 2080;
 document.getElementById('whatIfText').innerHTML =
   'The automation currently processes <strong class="green">' + autoJobsPerDay.toFixed(1) + ' jobs per workday</strong>. ' +
-  'The human pipeline processes <strong class="purple">' + humanJobsPerDay.toFixed(1) + '</strong>. ' +
+  'The manual pipeline processes <strong class="purple">' + humanJobsPerDay.toFixed(1) + '</strong>. ' +
   'If the automation stopped today, maintaining current volume would require <strong style="color:#fca5a5">' + additionalStaffNeeded +
-  ' additional data entry staff</strong>, adding an estimated <strong style="color:#fca5a5">' + money(additionalCost) + '/year</strong> in labor costs at the current blended rate.';
+  ' additional staff</strong>, adding an estimated <strong style="color:#fca5a5">' + money(additionalCost) + '/year</strong> in labor costs at the current blended rate.';
 
 // Race animation
 let raceAnim = null;
@@ -588,12 +583,12 @@ function startRace() {
     // Result message when auto finishes but human hasn't
     if (autoDone && !humanDone) {
       const remaining = humanSec - humanSimTime;
-      result.innerHTML = '<span class="green" style="font-weight:600">Automation finished.</span> <span style="color:#71717a">Human pipeline has <strong class="purple">' + fmt(remaining) + '</strong> remaining.</span>';
+      result.innerHTML = '<span class="green" style="font-weight:600">Automation finished.</span> <span style="color:#71717a">Manual pipeline has <strong class="purple">' + fmt(remaining) + '</strong> remaining.</span>';
     }
 
     if (autoDone && humanDone) {
       const ratio = Math.round(humanSec / autoSec);
-      result.innerHTML = '<span class="amber" style="font-weight:600">' + ratio.toLocaleString() + '× faster.</span> <span style="color:#71717a">The automation completed in <strong class="green">' + fmt(autoSec) + '</strong> vs <strong class="purple">' + fmt(humanSec) + '</strong> for the human pipeline.</span>';
+      result.innerHTML = '<span class="amber" style="font-weight:600">' + ratio.toLocaleString() + '× faster.</span> <span style="color:#71717a">The automation completed in <strong class="green">' + fmt(autoSec) + '</strong> vs <strong class="purple">' + fmt(humanSec) + '</strong> for the manual pipeline.</span>';
       btn.disabled = false;
       btn.style.opacity = '1';
       btn.textContent = 'Run again';
@@ -642,7 +637,7 @@ function cumTooltipHandler(context) {
   if (!d) { el.style.opacity = 0; return; }
 
   const color = isAuto ? '#4ade80' : '#a78bfa';
-  const label = isAuto ? 'AUTO' : 'HUMAN';
+  const label = isAuto ? 'AUTOMATION' : 'MANUAL';
   const dtOpts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
   const startDate = new Date(d.estSetup).toLocaleDateString('en-US', dtOpts);
   const endDate = new Date(d.lastAction).toLocaleDateString('en-US', dtOpts);
@@ -675,8 +670,8 @@ try {
   new Chart(document.getElementById('cumChart'),{
     type:'scatter',
     data:{datasets:[
-      {label:'Auto',data:autoCumData,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#4ade80',showLine:true,borderWidth:1.5,stepped:'after',fill:false},
-      {label:'Human',data:humanCumData,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#a78bfa',showLine:true,borderWidth:1.5,stepped:'after',fill:false}
+      {label:'Automation',data:autoCumData,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#4ade80',showLine:true,borderWidth:1.5,stepped:'after',fill:false},
+      {label:'Manual',data:humanCumData,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.7)',pointRadius:2,pointHoverRadius:6,pointHoverBackgroundColor:'#a78bfa',showLine:true,borderWidth:1.5,stepped:'after',fill:false}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,parsing:false,
@@ -714,7 +709,7 @@ function invTooltipHandler(context) {
   const d = src[dp.dataIndex];
   if (!d) { el.style.opacity = 0; return; }
   const color = isAuto ? '#4ade80' : '#a78bfa';
-  const label = isAuto ? 'AUTO' : 'HUMAN';
+  const label = isAuto ? 'AUTOMATION' : 'MANUAL';
   const dtOpts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
   const startDate = new Date(d.estSetup).toLocaleDateString('en-US', dtOpts);
   const endDate = new Date(d.lastAction).toLocaleDateString('en-US', dtOpts);
@@ -743,7 +738,7 @@ try {
     type:'scatter',
     data:{datasets:[
       {label:'Automation',data:autoInvoiceScatter,borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.75)',pointRadius:4,pointHoverRadius:7,pointHoverBackgroundColor:'#4ade80'},
-      {label:'Human',data:humanInvoiceScatter,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.75)',pointRadius:4,pointHoverRadius:7,pointHoverBackgroundColor:'#a78bfa'}
+      {label:'Manual',data:humanInvoiceScatter,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,0.75)',pointRadius:4,pointHoverRadius:7,pointHoverBackgroundColor:'#a78bfa'}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,parsing:false,
@@ -770,8 +765,8 @@ try {
   new Chart(document.getElementById('weeklyChart'),{
     type:'bar',
     data:{labels:wLabels,datasets:[
-      {label:'Auto',data:weeks.map(w=>aW[w]||0),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
-      {label:'Human',data:weeks.map(w=>hW[w]||0),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
+      {label:'Automation',data:weeks.map(w=>aW[w]||0),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
+      {label:'Manual',data:weeks.map(w=>hW[w]||0),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
     ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
       x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.4)',font:{size:10},maxRotation:45}},
@@ -791,7 +786,7 @@ try {
     type:'bar',
     data:{labels:invoiceLabels,datasets:[
       {label:'Automation',data:invoiceWeeks.map(w=>Math.round((aInvW[w]||0)*100)/100),backgroundColor:'#4ade80',borderRadius:4,barPercentage:.7},
-      {label:'Human',data:invoiceWeeks.map(w=>Math.round((hInvW[w]||0)*100)/100),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
+      {label:'Manual',data:invoiceWeeks.map(w=>Math.round((hInvW[w]||0)*100)/100),backgroundColor:'#a78bfa',borderRadius:4,barPercentage:.7}
     ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+money(ctx.parsed.y)}}},scales:{
       x:{grid:{display:false},ticks:{color:'rgba(255,255,255,0.4)',font:{size:10},maxRotation:45}},
@@ -801,7 +796,7 @@ try {
 } catch (e) { console.error('invoiceWeeklyChart failed:', e); }
 
 // Footer
-document.getElementById('footNote').textContent='Data source: PACE job + estimate history. Estimate Entry DateTime to last job entry action by entering user, with one Amount To Invoice value preserved per job and summed across the dashboard. Generated '+PACE_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs (EZEP/payapi), '+human.length+' human jobs (YATC).';
+document.getElementById('footNote').textContent='Data source: ERP job + estimate audit history. Estimate entry datetime to last job entry action, with one invoice value preserved per job. Generated '+DASHBOARD_DATA.generated.slice(0,10)+'. '+auto.length+' automation jobs, '+human.length+' manual jobs.';
 </script>
 
 </body>
