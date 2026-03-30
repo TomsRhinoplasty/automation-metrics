@@ -1,7 +1,7 @@
 // PACE Dashboard Data — generated 2026-03-28
 // Auto: 434 jobs ($51,339.41) | Human: 195 jobs ($175,119.95)
 // Human time/job: auto 7.0 min vs human 42.8 min (6.1× reduction)
-const PACE_DATA = {
+const DASHBOARD_DATA = {
   "generated": "2026-03-28T18:23:00.127Z",
   "summary": {
     "autoJobs": 434,
