@@ -156,11 +156,13 @@ h1{font-size:28px;font-weight:700;margin-bottom:4px} .sub{font-size:13px;color:#
     <h3>Drill into a single job’s raw timestamp trail</h3>
     <div class="inspector-controls">
       <select id="inspectorPipeline"><option value="auto">Automation</option><option value="human">Manual</option></select>
-      <input id="inspectorJob" placeholder="Enter job number">
+      <input id="inspectorJob" list="jobSuggestions" placeholder="Enter job number"><datalist id="jobSuggestions"></datalist>
       <button onclick="inspectJob()">Inspect</button>
       <button onclick="loadLongest()">Load longest job</button>
       <button onclick="loadLatest()">Load latest job</button>
     </div>
+    <div class="note" id="inspectorHelp" style="margin-bottom:10px"></div>
+    <div class="card" style="padding:12px;margin-top:0;margin-bottom:12px"><h3 style="margin-bottom:8px">Available jobs in selected pipeline</h3><div id="jobList" style="font-family:'DM Mono',monospace;font-size:12px;color:#a1a1aa;line-height:1.8"></div></div>
     <div class="three-col" style="margin-bottom:12px" id="inspectorStats"></div>
     <div class="timeline" id="timeline"></div>
   </div>
@@ -200,6 +202,42 @@ const auto = DATA.auto || [], human = DATA.human || [];
 const generated = parseLocalTS(DATA.generated) || new Date(DATA.generated || Date.now());
 const start = new Date(Math.min(...auto.concat(human).map(j=>parseLocalTS(j.estSetup).getTime())));
 const totalWorkdays = workdaysBetween(start, generated);
+
+const autoSorted = auto.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
+const humanSorted = human.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
+
+function getPipelineArray(pipelineValue){
+  return pipelineValue === 'human' ? human : auto;
+}
+function renderInspectorList(){
+  const pipelineValue = document.getElementById('inspectorPipeline').value;
+  const arr = getPipelineArray(pipelineValue).slice().sort((a,b)=>parseLocalTS(b.estSetup)-parseLocalTS(a.estSetup));
+  const top = arr.slice(0, 40);
+  document.getElementById('inspectorHelp').textContent =
+    arr.length
+      ? 'Showing 40 most recent job numbers for the selected pipeline. Use the field autocomplete or click a job below.'
+      : 'No jobs are loaded for this pipeline.';
+  document.getElementById('jobList').innerHTML = top.length
+    ? top.map(j => '<button onclick="inspectJob(\'' + j.job + '\', \''
+        + (pipelineValue === 'human' ? 'human' : 'auto')
+        + '\')" style="margin:0 8px 8px 0;background:#0c0c0e;border:1px solid #27272a;border-radius:6px;padding:6px 10px;color:#d4d4d8;font-family:DM Mono,monospace;font-size:12px;cursor:pointer">'
+        + j.job + '</button>').join('')
+    : '<span class="note">No jobs available.</span>';
+
+  const datalist = document.getElementById('jobSuggestions');
+  if (datalist) {
+    datalist.innerHTML = arr.slice(0, 250).map(j => '<option value="' + j.job + '"></option>').join('');
+  }
+}
+function cumulativeTooltipLabel(context){
+  const datasetIndex = context.datasetIndex;
+  const idx = context.dataIndex;
+  const src = datasetIndex === 0 ? autoSorted : humanSorted;
+  const job = src[idx];
+  const label = datasetIndex === 0 ? 'Automation' : 'Manual';
+  if(!job) return label;
+  return label + ' · Job ' + job.job + ' · ' + dateFmt(job.estSetup) + ' ET · cumulative ' + context.parsed.y;
+}
 const assumptions = DATA.assumptions || {};
 const businessLabel = assumptions.businessHours?.label || 'Mon–Fri 08:00–17:00';
 
@@ -364,10 +402,26 @@ const humanSorted = human.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLoca
 new Chart(document.getElementById('cumChart'),{
   type:'scatter',
   data:{datasets:[
-    {label:'Automation',data:autoSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5},
-    {label:'Manual',data:humanSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5}
+    {label:'Automation',data:autoSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.7)',showLine:true,stepped:'after',pointRadius:2,pointHoverRadius:5,borderWidth:1.5},
+    {label:'Manual',data:humanSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.7)',showLine:true,stepped:'after',pointRadius:2,pointHoverRadius:5,borderWidth:1.5}
   ]},
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)',callback:v=>new Date(v).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)'},beginAtZero:true}}}
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{
+          title:(items)=> items && items.length ? '' : '',
+          label:cumulativeTooltipLabel
+        }
+      }
+    },
+    scales:{
+      x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)',callback:v=>new Date(v).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},
+      y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)'},beginAtZero:true}
+    }
+  }
 });
 
 const aW={},hW={},aInvW={},hInvW={};
@@ -382,7 +436,8 @@ function inspectJob(jobNum, pipeline){
   const arr = pipeline === 'human' ? human : auto;
   const job = arr.find(j => String(j.job) === String(jobNum || document.getElementById('inspectorJob').value).trim());
   if (!job) {
-    document.getElementById('timeline').innerHTML = '<div class="note">Job not found in the loaded data.</div>';
+    const available = arr.slice().sort((a,b)=>parseLocalTS(b.estSetup)-parseLocalTS(a.estSetup)).slice(0,20).map(j=>j.job).join(', ');
+    document.getElementById('timeline').innerHTML = '<div class="note">Job not found in the loaded data. Recent available job numbers for this pipeline: ' + (available || 'none') + '</div>';
     document.getElementById('inspectorStats').innerHTML = '';
     return;
   }
@@ -406,6 +461,8 @@ setMode('median');
 if (auto[0]) inspectJob(auto[0].job, 'auto');
 
 document.getElementById('footNote').textContent = 'Data source: ERP estimate + job audit history. Usernames are anonymized on this page. Timestamps are shown as local Eastern time values from the source data with no timezone conversion. Scope: estimate entry to last job-entry action attributed to the selected pipeline user. Business-hours split used on this page: ' + businessLabel + '. Generated ' + generated.toISOString().slice(0,10) + '.';
+document.getElementById('inspectorPipeline').addEventListener('change', renderInspectorList);
+renderInspectorList();
 } catch(err) {
   console.error(err);
   document.body.innerHTML = '<div style="padding:2rem;color:#f87171;font-family:system-ui">Dashboard error: ' + err.message + '</div>';
