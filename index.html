@@ -187,7 +187,7 @@ const DATA = typeof DASHBOARD_DATA !== 'undefined' ? DASHBOARD_DATA : (typeof PA
 if (!DATA) throw new Error('data.js not loaded');
 const auto = DATA.auto || [], human = DATA.human || [];
 const generated = new Date(DATA.generated || Date.now());
-const start = new Date(Math.min(...auto.concat(human).map(j=>new Date(j.estSetup).getTime())));
+const start = new Date(Math.min(...auto.concat(human).map(j=>parseLocalTS(j.estSetup).getTime())));
 const totalWorkdays = workdaysBetween(start, generated);
 const assumptions = DATA.assumptions || {};
 const businessLabel = assumptions.businessHours?.label || 'Mon–Fri 08:00–17:00';
@@ -348,13 +348,13 @@ function pctRow(label, arrA, arrH){
   document.getElementById('outcomeTable').innerHTML = html;
 })();
 
-const autoSorted = auto.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
-const humanSorted = human.slice().sort((a,b)=>new Date(a.estSetup)-new Date(b.estSetup));
+const autoSorted = auto.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
+const humanSorted = human.slice().sort((a,b)=>parseLocalTS(a.estSetup)-parseLocalTS(b.estSetup));
 new Chart(document.getElementById('cumChart'),{
   type:'scatter',
   data:{datasets:[
-    {label:'Automation',data:autoSorted.map((j,i)=>({x:new Date(j.estSetup).getTime(),y:i+1})),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5},
-    {label:'Manual',data:humanSorted.map((j,i)=>({x:new Date(j.estSetup).getTime(),y:i+1})),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5}
+    {label:'Automation',data:autoSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5},
+    {label:'Manual',data:humanSorted.map((j,i)=>({x:parseLocalTS(j.estSetup).getTime(),y:i+1})),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.7)',showLine:true,stepped:'after',pointRadius:2,borderWidth:1.5}
   ]},
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{type:'linear',grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)',callback:v=>new Date(v).toLocaleDateString('en-US',{month:'short',day:'numeric'})}},y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'rgba(255,255,255,0.45)'},beginAtZero:true}}}
 });
@@ -363,7 +363,7 @@ const aW={},hW={},aInvW={},hInvW={};
 auto.forEach(j=>{const w=weekKey(j.estSetup);aW[w]=(aW[w]||0)+1;aInvW[w]=(aInvW[w]||0)+(Number(j.amountToInvoice)||0)});
 human.forEach(j=>{const w=weekKey(j.estSetup);hW[w]=(hW[w]||0)+1;hInvW[w]=(hInvW[w]||0)+(Number(j.amountToInvoice)||0)});
 const weeks=[...new Set([...Object.keys(aW),...Object.keys(hW),...Object.keys(aInvW),...Object.keys(hInvW)])].sort();
-const weekLabels=weeks.map(w=>new Date(w+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+const weekLabels=weeks.map(w=>parseLocalTS(w+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}));
 new Chart(document.getElementById('weeklyChart'),{type:'bar',data:{labels:weekLabels,datasets:[{label:'Automation',data:weeks.map(w=>aW[w]||0),backgroundColor:'#4ade80',borderRadius:4},{label:'Manual',data:weeks.map(w=>hW[w]||0),backgroundColor:'#a78bfa',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'rgba(255,255,255,.45)'}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(255,255,255,.45)'},beginAtZero:true}}}});
 new Chart(document.getElementById('invoiceWeeklyChart'),{type:'bar',data:{labels:weekLabels,datasets:[{label:'Automation',data:weeks.map(w=>Math.round((aInvW[w]||0)*100)/100),backgroundColor:'#4ade80',borderRadius:4},{label:'Manual',data:weeks.map(w=>Math.round((hInvW[w]||0)*100)/100),backgroundColor:'#a78bfa',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+money(ctx.parsed.y)}}},scales:{x:{grid:{display:false},ticks:{color:'rgba(255,255,255,.45)'}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'rgba(255,255,255,.45)',callback:v=>'$'+Number(v).toLocaleString()},beginAtZero:true}}}});
 
@@ -383,7 +383,7 @@ function inspectJob(jobNum, pipeline){
     {l:'Invoice / rows',v:money(job.amountToInvoice)+' / '+(job.nRows||job.events.length),c:'',s:'overnight: '+(job.crossedOvernight?'yes':'no')}
   ].map(m=>'<div class="m"><div class="ml">'+m.l+'</div><div class="mv '+m.c+'">'+m.v+'</div><div class="ms">'+m.s+'</div></div>').join('');
 
-  document.getElementById('timeline').innerHTML = (job.events || []).map(e=>'<div class="timeline-row"><div class="ts">'+dateFmt(e.ts)+'</div><div class="src">'+(e.source||'')+'</div><div class="delta">'+(e.deltaSecFromEstimate==null?'':fmtSec(e.deltaSecFromEstimate))+'</div><div class="field">'+(e.user?e.user+' · ':'')+(e.field||'')+'</div></div>').join('') || '<div class="note">No event trace available for this job.</div>';
+  document.getElementById('timeline').innerHTML = (job.events || []).map(e=>'<div class="timeline-row"><div class="ts">'+dateFmt(e.ts)+' ET</div><div class="src">'+(e.source||'')+'</div><div class="delta">'+(e.deltaSecFromEstimate==null?'':fmtSec(e.deltaSecFromEstimate))+'</div><div class="field">'+(e.user?e.user+' · ':'')+(e.field||'')+'</div></div>').join('') || '<div class="note">No event trace available for this job.</div>';
 }
 window.inspectJob = inspectJob;
 window.loadLongest = function(){ const pools = [{arr:auto,p:'auto'},{arr:human,p:'human'}].sort((a,b)=>(b.arr[0]?.totalSec||0)-(a.arr[0]?.totalSec||0)); let best=null,bp='auto'; [ ['auto',auto], ['human',human] ].forEach(([p,arr])=>arr.forEach(j=>{ if(!best || j.totalSec>best.totalSec){ best=j; bp=p; } })); if(best) inspectJob(best.job,bp); };
@@ -394,7 +394,7 @@ document.getElementById('inspectorPipeline').addEventListener('change', ()=>{ co
 setMode('median');
 if (auto[0]) inspectJob(auto[0].job, 'auto');
 
-document.getElementById('footNote').textContent = 'Data source: ERP estimate + job audit history. Scope: estimate entry to last job-entry action attributed to the selected pipeline user. Business-hours split used on this page: ' + businessLabel + '. Generated ' + generated.toISOString().slice(0,10) + '.';
+document.getElementById('footNote').textContent = 'Data source: ERP estimate + job audit history. Usernames are anonymized on this page. Timestamps are shown as local Eastern time values from the source data with no timezone conversion. Scope: estimate entry to last job-entry action attributed to the selected pipeline user. Business-hours split used on this page: ' + businessLabel + '. Generated ' + generated.toISOString().slice(0,10) + '.';
 } catch(err) {
   console.error(err);
   document.body.innerHTML = '<div style="padding:2rem;color:#f87171;font-family:system-ui">Dashboard error: ' + err.message + '</div>';
