@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Phase Tracker</title>
+<style>
+:root{--bg:#0a0c10;--card:#111318;--border:#1e2028;--text:#e5e7eb;--muted:#8b8fa3;--dim:#5c6070;--green:#4ade80;--purple:#a78bfa;--amber:#fbbf24;--red:#f87171}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,system-ui,sans-serif}
+main{max-width:1400px;margin:0 auto;padding:24px}
+h1{font-size:28px;margin:0 0 6px} h2{font-size:20px;margin:0 0 12px} h3{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
+p.sub{color:var(--muted);margin:0 0 18px}
+.grid2,.grid3,.grid4{display:grid;gap:14px}.grid2{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.grid4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.grid4,.grid3,.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.metric .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.metric .val{font-size:34px;font-weight:800;margin-top:6px}
+.metric .sub{font-size:12px;color:var(--muted);margin-top:5px}
+.green{color:var(--green)} .purple{color:var(--purple)} .amber{color:var(--amber)} .red{color:var(--red)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{padding:10px 8px;border-bottom:1px solid var(--border);text-align:left}
+.tbl th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
+.small{font-size:12px;color:var(--muted)}
+.bar-row{display:grid;grid-template-columns:220px 1fr 90px 90px;gap:12px;align-items:center;margin:14px 0}
+.bar-track{height:20px;background:#0d0f14;border:1px solid var(--border);border-radius:999px;position:relative;overflow:hidden}
+.bar-green,.bar-purple{position:absolute;top:0;height:100%}
+.bar-green{left:0;background:rgba(74,222,128,.75)}
+.bar-purple{background:rgba(167,139,250,.75)}
+.legend{display:flex;gap:16px;align-items:center;color:var(--muted);font-size:12px;margin-bottom:10px}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.pill{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px;margin-right:8px}
+.note{background:#0d0f14;border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--muted);line-height:1.6}
+.selects{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+select{background:#0d0f14;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.phaseA{color:#7ee7a6}.phaseB{color:#f0c674}.phaseC{color:#60a5fa}.phaseD{color:#c4b5fd}
+.timeline{max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:8px;background:#0d0f14}
+.ev{display:grid;grid-template-columns:160px 80px 110px 1fr;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border);font-size:12px}
+.ev:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>Automation Phase Tracker</h1>
+  <p class="sub" id="subtitle">Loading data…</p>
+
+  <div class="card" style="margin-bottom:16px">
+    <div id="metaPills"></div>
+    <div class="note" style="margin-top:12px">
+      <strong>Phase definitions used in this file</strong><br>
+      <span class="phaseA">Phase A</span>: first event to first Job-source event.<br>
+      <span class="phaseB">Phase B</span>: first Job-source event to first human Job-source event.<br>
+      <span class="phaseC">Phase C</span>: first human Job-source event to the start of the last closeout-signaling cluster.<br>
+      <span class="phaseD">Phase D</span>: start of the last closeout-signaling cluster to the final recorded timestamp.
+    </div>
+  </div>
+
+  <section>
+    <h2>Headline comparison</h2>
+    <div class="grid4" id="headline"></div>
+  </section>
+
+  <section style="margin-top:24px">
+    <h2>Lifecycle phase comparison</h2>
+    <p class="sub">This section uses phase boundaries rather than row-spread inside each phase, so launch and pickup no longer collapse to zero unless the underlying timestamps are actually simultaneous.</p>
+    <div class="card">
+      <div class="legend">
+        <span><span class="swatch" style="background:rgba(74,222,128,.75)"></span>Automation</span>
+        <span><span class="swatch" style="background:rgba(167,139,250,.75)"></span>Manual</span>
+      </div>
+      <div id="phaseBars"></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>Median phase details</h3>
+        <table class="tbl" id="phaseTable"></table>
+      </div>
+      <div class="card">
+        <h3>Interpretation</h3>
+        <div class="note" id="phaseNarrative"></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:24px">
+    <h2>Job inspector</h2>
+    <div class="card">
+      <div class="selects">
+        <select id="pipelineSel">
+          <option value="auto">Automation</option>
+          <option value="human">Manual</option>
+        </select>
+        <select id="jobSel"></select>
+      </div>
+      <div class="grid4" id="jobMetrics"></div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card">
+          <h3>Phase summary</h3>
+          <table class="tbl" id="jobPhaseTable"></table>
+        </div>
+        <div class="card">
+          <h3>Event trail</h3>
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="./data.js"></script>
+<script>
+const DATA = typeof DASHBOARD_DATA !== 'undefined' ? DASHBOARD_DATA : null;
+if(!DATA) throw new Error('data.js not loaded');
+
+const auto = DATA.auto || [];
+const human = DATA.human || [];
+const N = DATA.narrative || {};
+const $ = id => document.getElementById(id);
+
+function fmtSec(sec){
+  sec = Number(sec||0);
+  if(sec < 60) return Math.round(sec)+'s';
+  if(sec < 3600) return (sec/60).toFixed(1)+' min';
+  if(sec < 86400) return (sec/3600).toFixed(1)+' hrs';
+  return (sec/86400).toFixed(1)+' days';
+}
+function pctDiff(a,b){
+  a=Number(a||0); b=Number(b||0);
+  if(!b) return '—';
+  return ((1-(a/b))*100).toFixed(1)+'%';
+}
+function median(arr){
+  const a = arr.filter(v => v != null && !isNaN(v)).sort((x,y)=>x-y);
+  if(!a.length) return 0;
+  const i = Math.floor(a.length/2);
+  return a.length % 2 ? a[i] : (a[i-1]+a[i])/2;
+}
+function q(list, key){ return list.map(j => j[key]); }
+function phaseMetric(list, phase){ return list.map(j => (((j.phaseSummary||{})[phase]||{}).elapsedSec)||0); }
+
+const dr = (N.dateRange||{});
+$('subtitle').textContent = `Generated ${DATA.generated || ''} · ${auto.length} automation jobs vs ${human.length} manual jobs`;
+
+$('metaPills').innerHTML = `
+  <span class="pill">Date range: ${(dr.earliest||'').replace('T',' ')} → ${(dr.latest||'').replace('T',' ')}</span>
+  <span class="pill">Weeks covered: ${dr.weeks || '—'}</span>
+  <span class="pill">Idle gap: ${(DATA.assumptions?.clustering?.idleGapMinutes)||60} min</span>
+`;
+
+const aA = median(phaseMetric(auto,'A')), hA = median(phaseMetric(human,'A'));
+const aB = median(phaseMetric(auto,'B')), hB = median(phaseMetric(human,'B'));
+const aC = median(phaseMetric(auto,'C')), hC = median(phaseMetric(human,'C'));
+const aD = median(phaseMetric(auto,'D')), hD = median(phaseMetric(human,'D'));
+
+$('headline').innerHTML = [
+  ['Phase A — Launch', `<span class="green">${fmtSec(aA)}</span> <span class="small">vs</span> <span class="purple">${fmtSec(hA)}</span>`, 'Front-end estimate→job construction'],
+  ['Phase B — Pickup delay', `<span class="green">${fmtSec(aB)}</span> <span class="small">vs</span> <span class="purple">${fmtSec(hB)}</span>`, 'How long until a human first touches the Job side'],
+  ['Phase C — Progression', `<span class="green">${fmtSec(aC)}</span> <span class="small">vs</span> <span class="purple">${fmtSec(hC)}</span>`, 'Post-pickup operational progression'],
+  ['Phase D — Closeout tail', `<span class="green">${fmtSec(aD)}</span> <span class="small">vs</span> <span class="purple">${fmtSec(hD)}</span>`, 'Late billing / final administrative tail']
+].map(([label,val,sub]) => `<div class="card metric"><div class="label">${label}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`).join('');
+
+const phases = [
+  ['A','Phase A — Launch & Conversion', aA, hA],
+  ['B','Phase B — Time to First Human Job Pickup', aB, hB],
+  ['C','Phase C — Post-Pickup Progression', aC, hC],
+  ['D','Phase D — Closeout Tail', aD, hD]
+];
+const maxPhase = Math.max(...phases.flatMap(p => [p[2], p[3], 1]));
+
+$('phaseBars').innerHTML = phases.map(([code,label,a,h]) => {
+  const aw = Math.max(1,(a/maxPhase)*100);
+  const hw = Math.max(1,(h/maxPhase)*100);
+  return `<div class="bar-row">
+    <div><strong class="phase${code}">${label}</strong></div>
+    <div class="bar-track">
+      <div class="bar-green" style="width:${aw}%;"></div>
+      <div class="bar-purple" style="left:${aw}%; width:${Math.max(0, hw-aw)}%;"></div>
+      ${hw<aw ? `<div class="bar-purple" style="left:0;width:${hw}%;opacity:.95"></div>` : ``}
+    </div>
+    <div class="green">${fmtSec(a)}</div>
+    <div class="purple">${fmtSec(h)}</div>
+  </div>`;
+}).join('');
+
+$('phaseTable').innerHTML = `
+<thead><tr><th>Metric</th><th>Automation</th><th>Manual</th><th>Relative</th></tr></thead>
+<tbody>
+${phases.map(([code,label,a,h]) => `<tr><td>${label}</td><td class="green">${fmtSec(a)}</td><td class="purple">${fmtSec(h)}</td><td>${pctDiff(a,h)} lower</td></tr>`).join('')}
+<tr><td>Estimate-side rows after first Job</td><td class="green">${median(auto.map(j=>j.estimateAfterInitialJobRows))}</td><td class="purple">${median(human.map(j=>j.estimateAfterInitialJobRows))}</td><td>embedded revisit load</td></tr>
+<tr><td>Clusters with estimate-side revisits</td><td class="green">${median(auto.map(j=>j.estimateAfterInitialJobClusters))}</td><td class="purple">${median(human.map(j=>j.estimateAfterInitialJobClusters))}</td><td>embedded revisit load</td></tr>
+</tbody>`;
+
+$('phaseNarrative').innerHTML = `
+The most decision-useful phase is <strong>Phase A</strong>: it isolates front-end estimate-to-job construction, which is where the automation has the clearest causal ownership.
+In this dataset, the automated pipeline reaches the first Job-side event much faster than the manual pipeline.
+<strong>Phase B</strong> shows handoff latency to the first human Job-side touch.
+<strong>Phase C</strong> is the remaining operational progression after that pickup.
+<strong>Phase D</strong> is often small because the final closeout signal can occur in the last timestamped cluster; that is a property of the logs, not a rendering bug.
+`;
+
+function populateJobs(){
+  const list = $('pipelineSel').value === 'auto' ? auto : human;
+  $('jobSel').innerHTML = list.map(j => `<option value="${j.job}">${j.job}</option>`).join('');
+  renderJob();
+}
+function renderJob(){
+  const list = $('pipelineSel').value === 'auto' ? auto : human;
+  const jobNum = Number($('jobSel').value || (list[0] && list[0].job));
+  const j = list.find(x => x.job === jobNum) || list[0];
+  if(!j) return;
+  const ps = j.phaseSummary || {};
+  $('jobMetrics').innerHTML = [
+    ['Lifecycle', fmtSec(j.fullLifecycleSec), 'first event → last event'],
+    ['Active cluster time', fmtSec(j.totalActiveSec||0), 'sum of cluster spans'],
+    ['Actions', j.totalActions, 'logged history rows'],
+    ['Estimate rows after first Job', j.estimateAfterInitialJobRows, 'embedded revisits']
+  ].map(([label,val,sub]) => `<div class="card metric"><div class="label">${label}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`).join('');
+  const rows = ['A','B','C','D'].map(ph => {
+    const p = ps[ph] || {};
+    return `<tr><td class="phase${ph}">${p.label||ph}</td><td>${fmtSec(p.elapsedSec||0)}</td><td>${p.startTs||'-'}</td><td>${p.endTs||'-'}</td><td>${p.rowCount||0}</td></tr>`;
+  }).join('');
+  $('jobPhaseTable').innerHTML = `<thead><tr><th>Phase</th><th>Duration</th><th>Start</th><th>End</th><th>Rows</th></tr></thead><tbody>${rows}</tbody>`;
+  $('timeline').innerHTML = (j.events||[]).map(e => `<div class="ev"><div>${e.ts}</div><div class="phase${e.phase}">Phase ${e.phase}</div><div>${e.actorType}</div><div>${e.source} · ${e.field}${e.afterInitialJob?' · revisit':''}</div></div>`).join('');
+}
+$('pipelineSel').addEventListener('change', populateJobs);
+$('jobSel').addEventListener('change', renderJob);
+populateJobs();
+</script>
+</body>
+</html>
